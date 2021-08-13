@@ -71,6 +71,7 @@ def make_test_data():
                                 equal_sign=e['equal_sign']).to_string(protobuf_obj)
         write_file(e['file_name'], actual_text)
 
-#
-# if __name__ == '__main__':
-#     make_test_data()
+
+if __name__ == '__main__':
+    print('create test data files...')
+    make_test_data()
