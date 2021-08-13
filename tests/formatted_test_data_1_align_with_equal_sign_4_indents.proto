@@ -3,7 +3,7 @@ asdddddddd
 price demo  API request message
 sdfghjk
 */
-syntax = "proto3";  // The price sdfgfhg API request message //asd /*asdfghj*/阿斯蒂芬
+syntax = "proto3";  // The price sdfgfhg API request message //asd /*asdfghj*/ AS
 
 /*
 asdddddddd
@@ -41,7 +41,7 @@ message DemoRequestA {
     asdfghjkytrewqrty
     adasdasd
     */
-    None common.RequestContext request_context   = 1;  // Basic request context data
+    common.RequestContext request_context        = 1;  // Basic request context data
     /*
     asdfghjkytrewqrty
     */
@@ -50,7 +50,7 @@ message DemoRequestA {
     adasdasd
     */
     repeated common.Tiger work_legs              = 3;  // Chronological work  legs
-    None common.Money quote_price                = 4;  // Use to validate the work  price, the currency must be the same as
+    common.Money quote_price                     = 4;  // Use to validate the work  price, the currency must be the same as
 }
 
 /*
@@ -65,7 +65,7 @@ message DemoRequestB {
     /*
     asdfghjkytrewqrty
     */
-    None common.RequestContext request_context   = 1;  // Basic request context data
+    common.RequestContext request_context        = 1;  // Basic request context data
     /*
     asdfghjkytrewqrty
     */
@@ -74,8 +74,8 @@ message DemoRequestB {
     adasdasd
     */
     repeated common.Tiger work_legs              = 3;  // Chronological work  legs
-    None common.Money quote_price                = 4;  // Use to validate the work  price, the currency must be the same as
-    None common.Money quote_pasdasrice           = 5;  // Use to validate the work  price
+    common.Money quote_price                     = 4;  // Use to validate the work  price, the currency must be the same as
+    common.Money quote_pasdasrice                = 5;  // Use to validate the work  price
 }
 
 /*
@@ -91,14 +91,14 @@ enum BaggageType {
 }
 
 message DemoRequestC {
-    None common.RequestContext request_context   = 1;  // Basic request context data
+    common.RequestContext request_context        = 1;  // Basic request context data
     repeated common.WorkerGroup passenger_groups = 2;  // Worker groups
     /*
     adasdasd
     */
     repeated common.Tiger work_legs              = 3;  // Chronological work  legs
-    None common.Money quote_price                = 4;  // Use to validate the work  price, the currency must be the same as
-    None common.Money quote_pasdasrice           = 4;  // Use to validate the work  price
+    common.Money quote_price                     = 4;  // Use to validate the work  price, the currency must be the same as
+    common.Money quote_pasdasrice                = 4;  // Use to validate the work  price
 }
 
 /*

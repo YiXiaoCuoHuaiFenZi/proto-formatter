@@ -2,7 +2,7 @@
 asdddddddd
 price demo  API request message
 sdfghjk
-The price sdfgfhg API request message //asd /*asdfghj*/阿斯蒂芬
+The price sdfgfhg API request message //asd /*asdfghj*/ AS
 */
 syntax = "proto3";
 
@@ -63,7 +63,7 @@ message DemoRequestA {
     adasdasd
     Basic request context data
     */
-    None common.RequestContext request_context   = 1;
+    common.RequestContext request_context        = 1;
     /*
     asdfghjkytrewqrty
     Worker groups
@@ -77,7 +77,7 @@ message DemoRequestA {
     /*
     Use to validate the work  price, the currency must be the same as
     */
-    None common.Money quote_price                = 4;
+    common.Money quote_price                     = 4;
 }
 
 /*
@@ -93,7 +93,7 @@ message DemoRequestB {
     asdfghjkytrewqrty
     Basic request context data
     */
-    None common.RequestContext request_context   = 1;
+    common.RequestContext request_context        = 1;
     /*
     asdfghjkytrewqrty
     Worker groups
@@ -107,11 +107,11 @@ message DemoRequestB {
     /*
     Use to validate the work  price, the currency must be the same as
     */
-    None common.Money quote_price                = 4;
+    common.Money quote_price                     = 4;
     /*
     Use to validate the work  price
     */
-    None common.Money quote_pasdasrice           = 5;
+    common.Money quote_pasdasrice                = 5;
 }
 
 /*
@@ -137,7 +137,7 @@ message DemoRequestC {
     /*
     Basic request context data
     */
-    None common.RequestContext request_context   = 1;
+    common.RequestContext request_context        = 1;
     /*
     Worker groups
     */
@@ -150,11 +150,11 @@ message DemoRequestC {
     /*
     Use to validate the work  price, the currency must be the same as
     */
-    None common.Money quote_price                = 4;
+    common.Money quote_price                     = 4;
     /*
     Use to validate the work  price
     */
-    None common.Money quote_pasdasrice           = 4;
+    common.Money quote_pasdasrice                = 4;
 }
 
 /*
