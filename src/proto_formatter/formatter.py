@@ -146,7 +146,6 @@ class Formatter():
         else:
             line = f'{obj.type} {obj.name}'
 
-        line = f'{obj.label} {obj.type} {obj.name}'
         need_fill_space_amount = max_length - len(line)
         line = f'{line}{" " * need_fill_space_amount} = {obj.number};'
 
