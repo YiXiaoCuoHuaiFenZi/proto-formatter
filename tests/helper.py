@@ -1,5 +1,8 @@
+import os
 from proto_formatter.formatter import Formatter
 from proto_formatter.parser import ProtoParser
+
+test_path = os.path.dirname(os.path.realpath(__file__))
 
 
 def read_lines(file_path):
@@ -8,6 +11,11 @@ def read_lines(file_path):
         content = content.strip()
         lines = content.split('\n')
         return lines
+
+
+def read_proto(proto_file_name):
+    fp = os.path.join(test_path, proto_file_name)
+    return read_file(fp)
 
 
 def read_file(file_path):
@@ -64,4 +72,5 @@ def make_test_data():
 
 
 if __name__ == '__main__':
+    print('create test data files...')
     make_test_data()
