@@ -15,7 +15,6 @@ def read_lines(file_path):
 
 def read_proto(proto_file_name):
     fp = os.path.join(test_path, proto_file_name)
-    print(fp)
     return read_file(fp)
 
 
