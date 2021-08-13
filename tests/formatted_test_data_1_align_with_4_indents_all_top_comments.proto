@@ -1,0 +1,173 @@
+/*
+asdddddddd
+price demo  API request message
+sdfghjk
+The price sdfgfhg API request message //asd /*asdfghj*/阿斯蒂芬
+*/
+syntax = "proto3";
+
+/*
+asdddddddd
+sdfghjk
+The price availabil
+*/
+package yxchfz.dalao.api;
+
+/*
+The price demo  API request message
+aaaaaaaaaaaaaa
+asdasdasd
+The price demo  API request messageadssd
+asdasdasd asdsad
+y API request messageadssd
+Chronological work  legs
+*/
+option java_package = "net.yxchfz.schema.api";
+/*
+Chronological work  legs
+*/
+option java_outer_classname = "Demo Proto";
+/*
+Chronological work  legss
+*/
+option java_multiple_files = true;
+
+/*
+currency must be the same as
+*/
+import "yixiaocuohuaifenzi/democontract/common/client.proto";
+/*
+Chronological work  legs
+*/
+import "yixiaocuohuaifenzi/democontract/common/pass.proto";
+/*
+asdfgh
+*/
+import "yixiaocuohuaifenzi/democontract/common/dasdasd.proto";
+/*
+sdsads
+*/
+import "yixiaocuohuaifenzi/democontract/common/ewegrhf.proto";
+
+/*
+The fasdghjk adsfgh
+Chronological work  legs
+
+
+safdf
+Chronological work  legs
+*/
+message DemoRequestA {
+    /*
+    asdfghjkytrewqrty
+    adasdasd
+    Basic request context data
+    */
+    common.RequestContext request_context = 1;
+    /*
+    asdfghjkytrewqrty
+    Worker groups
+    */
+    repeated common.WorkerGroup passenger_groups = 2;
+    /*
+    adasdasd
+    Chronological work  legs
+    */
+    repeated common.Tiger work_legs = 3;
+    /*
+    Use to validate the work  price, the currency must be the same as
+    */
+    common.Money quote_price = 4;
+}
+
+/*
+The fasdghjk adsfgh
+Chronological work  legs
+asdfg
+
+safdf
+Chronological work  legs
+*/
+message DemoRequestB {
+    /*
+    asdfghjkytrewqrty
+    Basic request context data
+    */
+    common.RequestContext request_context = 1;
+    /*
+    asdfghjkytrewqrty
+    Worker groups
+    */
+    repeated common.WorkerGroup passenger_groups = 2;
+    /*
+    adasdasd
+    Chronological work  legs
+    */
+    repeated common.Tiger work_legs = 3;
+    /*
+    Use to validate the work  price, the currency must be the same as
+    */
+    common.Money quote_price = 4;
+    /*
+    Use to validate the work  price
+    */
+    common.Money quote_pasdasrice = 5;
+}
+
+/*
+BaggageType
+*/
+enum BaggageType {
+    /*
+    BAGGAGE_TYPE_UNSPECIFIED
+    */
+    BAGGAGE_TYPE_UNSPECIFIED = 0;
+    /*
+    BAGGAGE_TYPE_CARRY_ON
+    */
+    BAGGAGE_TYPE_CARRY_ON = 1;
+    /*
+    asdfgh
+    BAGGAGE_TYPE_CHECKED
+    */
+    BAGGAGE_TYPE_CHECKED = 2;
+}
+
+message DemoRequestC {
+    /*
+    Basic request context data
+    */
+    common.RequestContext request_context = 1;
+    /*
+    Worker groups
+    */
+    repeated common.WorkerGroup passenger_groups = 2;
+    /*
+    adasdasd
+    Chronological work  legs
+    */
+    repeated common.Tiger work_legs = 3;
+    /*
+    Use to validate the work  price, the currency must be the same as
+    */
+    common.Money quote_price = 4;
+    /*
+    Use to validate the work  price
+    */
+    common.Money quote_pasdasrice = 4;
+}
+
+/*
+The price Demo  rpc service
+*/
+service Demo {
+    /*
+    asdfgf
+    sadfdDemo
+    */
+    rpc DemoA (DemoRequest) returns (DemoResponse);
+    /*
+    Demo
+    */
+    rpc DemoB (DemoRequest) returns (DemoResponse);
+}
