@@ -45,35 +45,35 @@ class Detector(Constant):
         return line.strip().startswith('import ')
 
     def _is_object_start(self, line):
-        if line.count(self.LEFT_BRACE) == 0:
+        if line.count(self.BRACE_LEFT) == 0:
             return False
 
         if line.count(self.SINGLE_COMMENT_SYMBOL) > 0:
-            if line.index(self.LEFT_BRACE) > line.index(self.SINGLE_COMMENT_SYMBOL):
+            if line.index(self.BRACE_LEFT) > line.index(self.SINGLE_COMMENT_SYMBOL):
                 return False
 
         if line.count(self.MULTIPLE_COMENT_START_SYMBOL) > 0:
-            if line.index(self.LEFT_BRACE) > line.index(self.MULTIPLE_COMENT_START_SYMBOL):
+            if line.index(self.BRACE_LEFT) > line.index(self.MULTIPLE_COMENT_START_SYMBOL):
                 return False
 
         return True
 
     def _is_object_end(self, line):
-        if line.count(self.RIGHT_BRACE) == 0:
+        if line.count(self.BRACE_RIGHT) == 0:
             return False
 
         if line.count(self.SINGLE_COMMENT_SYMBOL) > 0:
-            if line.index(self.RIGHT_BRACE) > line.index(self.SINGLE_COMMENT_SYMBOL):
+            if line.index(self.BRACE_RIGHT) > line.index(self.SINGLE_COMMENT_SYMBOL):
                 return False
 
         if line.count(self.MULTIPLE_COMENT_START_SYMBOL) > 0:
-            if line.index(self.RIGHT_BRACE) > line.index(self.MULTIPLE_COMENT_START_SYMBOL):
+            if line.index(self.BRACE_RIGHT) > line.index(self.MULTIPLE_COMENT_START_SYMBOL):
                 return False
 
         return True
 
     def _is_message_object(self, line):
-        return line.strip().startswith('message ') and line.strip().count(self.LEFT_BRACE)
+        return line.strip().startswith('message ') and line.strip().count(self.BRACE_LEFT)
 
     def _is_element_line(self, line):
         if line.count(self.SEMICOLON) == 0:
@@ -106,7 +106,7 @@ class Detector(Constant):
         return line.startswith('map<')
 
     def _is_enum_object(self, line):
-        return line.strip().startswith('enum ') and line.strip().count(self.LEFT_BRACE)
+        return line.strip().startswith('enum ') and line.strip().count(self.BRACE_LEFT)
 
     def _is_service_object(self, line):
-        return line.strip().startswith('service ') and line.strip().count(self.LEFT_BRACE)
+        return line.strip().startswith('service ') and line.strip().count(self.BRACE_LEFT)
