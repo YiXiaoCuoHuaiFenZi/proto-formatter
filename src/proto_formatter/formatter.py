@@ -33,14 +33,23 @@ class Formatter():
         return content
 
     def syntax_string(self, obj: Syntax):
+        if not obj:
+            return ''
+
         line = f'syntax = "{obj.value}";'
         return self.make_string(line, obj.comments)
 
     def package_string(self, obj: Package):
+        if not obj:
+            return ''
+
         line = f'package {obj.value};'
         return self.make_string(line, obj.comments)
 
     def options_string(self, obj_list):
+        if not obj_list:
+            return ''
+
         max_length = self.max_length_of_option(obj_list)
 
         string_list = []
@@ -71,6 +80,9 @@ class Formatter():
         return self.make_string(line, obj.comments, max_length)
 
     def imports_string(self, obj_list):
+        if not obj_list:
+            return ''
+
         max_length = self.max_length_of_import(obj_list)
 
         string_list = []

@@ -28,7 +28,7 @@ class ObjectParser(Constant):
 
     @classmethod
     def parse_obj_field(cls, line, top_comments):
-        pass
+        raise NotImplementedError("Element parse not implemented.")
 
     def parse_and_add(self, proto_obj: ProtoBufStructure, lines, top_comment_list):
         self.parse(lines, top_comment_list, True)
