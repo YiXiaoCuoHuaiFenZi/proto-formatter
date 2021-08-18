@@ -1,6 +1,5 @@
 import os
-from proto_formatter.formatter import Formatter
-from proto_formatter.parser import ProtoParser
+from proto_formatter import format_file
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -61,15 +60,17 @@ def make_test_data():
             'equal_sign': True
         }
     ]
-    parser = ProtoParser()
-    protobuf_obj = parser.load('test_data_1.proto')
-
     for e in c:
-        actual_text = Formatter(indents=e['indents'], all_top_comments=e['all_top_comments'],
-                                equal_sign=e['equal_sign']).to_string(protobuf_obj)
-        write_file(e['file_name'], actual_text)
+        format_file(
+            fp='test_data_1.proto',
+            indents=e['indents'],
+            all_top_comments=e['all_top_comments'],
+            equal_sign=e['equal_sign'],
+            new_fp=e['file_name']
+        )
 
 
 if __name__ == '__main__':
     print('create test data files...')
     make_test_data()
+    print('Done')
