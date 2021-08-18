@@ -9,7 +9,7 @@ pip install proto-formatter
 - Format protobuf file using default config: indents=2, all_top_comments=False, equal_sign=False, new_fp=None.
 Original protobuf file `test.proto` will be rewritten with formatted content.
 ```python
-from proto_formatter import format_file, format_str
+from proto_formatter import format_file
 
 format_file('test.proto')
 ```
