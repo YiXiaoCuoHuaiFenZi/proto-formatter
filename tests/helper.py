@@ -62,8 +62,7 @@ def make_test_data():
         }
     ]
     parser = ProtoParser()
-    lines = parser.read_lines('test_data_1.proto')
-    protobuf_obj = parser.parse(lines)
+    protobuf_obj = parser.load('test_data_1.proto')
 
     for e in c:
         actual_text = Formatter(indents=e['indents'], all_top_comments=e['all_top_comments'],

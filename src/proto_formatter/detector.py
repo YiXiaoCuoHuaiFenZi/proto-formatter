@@ -90,12 +90,20 @@ class Detector(Constant):
         if self._is_service_element_line(line):
             return True
 
+        if self._is_map_element_line(line):
+            return True
+
         return line.strip().count(self.SEMICOLON) > 0 and line.strip().count(self.EQUAL_SIGN) > 0
 
     def _is_service_element_line(self, line):
         # rpc SeatAvailability (SeatAvailabilityRequest) returns (SeatAvailabilityResponse);
         line = line.strip()
         return line.startswith('rpc ')
+
+    def _is_map_element_line(self, line):
+        # map<string, Project> projects = 3;
+        line = line.strip().replace(' ', '')
+        return line.startswith('map<')
 
     def _is_enum_object(self, line):
         return line.strip().startswith('enum ') and line.strip().count(self.LEFT_BRACE)

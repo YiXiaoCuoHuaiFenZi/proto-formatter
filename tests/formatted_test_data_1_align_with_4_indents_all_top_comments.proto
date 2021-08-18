@@ -109,6 +109,13 @@ message DemoRequestB {
     */
     common.Money quote_price = 4;
     /*
+    map field comment a
+    map field comment b
+    map field comment c
+    map field comment d
+    */
+    map<string, Project> projects = 3;
+    /*
     Use to validate the work  price
     */
     common.Money quote_pasdasrice = 5;
