@@ -6,3 +6,5 @@ class Constant(object):
     RIGHT_BRACE = '}'
     EQUAL_SIGN = '='
     SEMICOLON = ';'
+    ANGLE_BRACKET_LEFT = '<'
+    ANGLE_BRACKET_RIGHT = '>'

@@ -13,6 +13,9 @@ class MessageParser(ObjectParser):
         super(MessageParser, self).__init__(obj=obj)
 
     def parse_obj_field(self, line, top_comments=[]):
+        if 'map<' in line:
+            return self.make_map_field_element(line, top_comments)
+
         line = line.strip()
         equal_sign_index = line.index(self.EQUAL_SIGN)
         semicolon_index = line.index(self.SEMICOLON)
@@ -27,3 +30,18 @@ class MessageParser(ObjectParser):
             return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=value, comments=comments)
 
         return None
+
+    def make_map_field_element(self, line, top_comments=[]):
+        right_bracket_index = line.index(self.ANGLE_BRACKET_RIGHT)
+        equal_sign_index = line.index(self.EQUAL_SIGN)
+        semicolon_index = line.index(self.SEMICOLON)
+        type = line[:right_bracket_index + 1]
+        type = type.strip().replace(' ', '')
+        type_parts = type.split(',')
+        type = ', '.join(type_parts)
+        name = line[right_bracket_index + 1:equal_sign_index]
+        name = name.strip()
+        number = line[equal_sign_index + 1:semicolon_index]
+        number = number.strip()
+        comments = CommentParser.create_comment(line, top_comments)
+        return MessageElement(label=None, type=type, name=name, number=number, comments=comments)
