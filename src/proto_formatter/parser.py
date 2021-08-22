@@ -3,13 +3,11 @@ from enum import Enum
 from proto_formatter.constant import Constant
 from proto_formatter.comment import CommentParser
 from proto_formatter.detector import Detector
-from proto_formatter.enum_parser import EnumParser
 from proto_formatter.import_parser import ImportParser
-from proto_formatter.message_parser import MessageParser
+from proto_formatter.object_parser import ObjectParser
 from proto_formatter.option_parser import OptionParser
 from proto_formatter.package_parser import PackageParser
 from proto_formatter.proto import ProtoBufStructure
-from proto_formatter.service_parser import ServiceParser
 from proto_formatter.syntax_parser import SyntaxParser
 from proto_formatter.util import remove_prefix, remove_suffix
 
@@ -54,20 +52,26 @@ class ProtoParser(Constant):
         :param lines: the proto content lines.
         :return: an object of ProtoBufStructure.
         """
-        keyword, comments = Detector().get_object_type(lines)
-        parser = self._get_parser(keyword)
+        top_comments = Detector().get_top_comments(lines)
+        if len(lines) == 0:
+            return self.protobuf_obj
+
+        first_line = lines[0]
+        type = Detector().get_type(first_line)
+
+        parser = self._get_parser(type)
         if parser is None:
             return self.protobuf_obj
 
-        if isinstance(parser, MessageParser):
-            parser.parse_and_add(self.protobuf_obj, lines, comments)
-        elif isinstance(parser, EnumParser):
-            parser.parse_and_add(self.protobuf_obj, lines, comments)
-        elif isinstance(parser, ServiceParser):
-            parser.parse_and_add(self.protobuf_obj, lines, comments)
+        if isinstance(parser, ObjectParser):
+            parser.parse(lines)
+            top_comments = CommentParser.create_comment(first_line, top_comments)
+            all_comments = top_comments + parser.objects[0].comments
+            parser.objects[0].comments = all_comments
+            self.protobuf_obj.objects.extend(parser.objects)
         else:
             line = lines.pop(0)
-            parser.parse_and_add(self.protobuf_obj, line, comments)
+            parser.parse_and_add(self.protobuf_obj, line, top_comments)
 
         if len(lines) == 0:
             return self.protobuf_obj
@@ -84,8 +88,10 @@ class ProtoParser(Constant):
         elif keyword == 'import':
             return ImportParser()
         elif keyword == 'message':
-            return MessageParser()
+            return ObjectParser()
         elif keyword == 'enum':
-            return EnumParser()
+            return ObjectParser()
         elif keyword == 'service':
-            return ServiceParser()
+            return ObjectParser()
+        elif keyword == 'oneof':
+            return ObjectParser()
