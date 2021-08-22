@@ -55,6 +55,20 @@ class Message():
         self.elements = elements
         self.comments = comments
 
+class OneofElement():
+    def __init__(self, type, name, number, label=None, comments=[]):
+        self.label = label
+        self.type = type
+        self.name = name
+        self.number = number
+        self.comments = comments
+
+
+class Oneof():
+    def __init__(self, name, elements=[], comments=[]):
+        self.name = name
+        self.elements = elements
+        self.comments = comments
 
 class EnumElement():
     def __init__(self, name, number, comments=[]):

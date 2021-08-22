@@ -7,30 +7,43 @@ from proto_formatter.util import remove_prefix, remove_suffix
 
 class Detector(Constant):
 
-    def get_object_type(self, lines):
+    def get_top_comments(self, lines):
         comment_parser = CommentParser()
-        comments = comment_parser.pick_up_comment(lines)
-        comments = comment_parser.parse(comments)
+        comments_lines = comment_parser.pick_up_comment(lines)
+        comments = comment_parser.parse(comments_lines)
 
-        line = lines[0]
+        return comments
+
+    def get_type(self, line):
         if self._is_syntax_line(line):
-            return 'syntax', comments
+            return 'syntax'
         if self._is_package_line(line):
-            return 'package', comments
+            return 'package'
         if self._is_option_line(line):
-            return 'option', comments
+            return 'option'
         if self._is_import_line(line):
-            return 'import', comments
+            return 'import'
         if self._is_message_object(line):
-            return 'message', comments
-        if self._is_element_line(line):
-            return 'element_field', comments
+            return 'message'
         if self._is_enum_object(line):
-            return 'enum', comments
+            return 'enum'
         if self._is_service_object(line):
-            return 'service', comments
+            return 'service'
+        # if self._is_element_line(line):
+        #     return 'element_field', comments
+        if self._is_message_element(line):
+            return 'message_element'
+        if self._is_enum_element(line):
+            return 'enum_element'
+        if self._is_service_element(line):
+            return 'service_element'
+        if self._is_oneof_object(line):
+            return 'oneof'
 
-        return None, None
+        return 'unknown'
+
+    def is_object_ype(self, type):
+        return type in ['message', 'enum', 'service', 'oneof']
 
     def _is_syntax_line(self, line):
         return line.replace(' ', '').startswith('syntax=')
@@ -75,6 +88,25 @@ class Detector(Constant):
     def _is_message_object(self, line):
         return line.strip().startswith('message ') and line.strip().count(self.BRACE_LEFT)
 
+    def _is_oneof_object(self, line):
+        return line.strip().startswith('oneof ') and line.strip().count(self.BRACE_LEFT)
+
+    def _is_message_element(self, line):
+        if not self._is_element_line(line):
+            return False
+
+        if self._is_map_element(line):
+            return True
+
+        parts = line.strip().split(self.EQUAL_SIGN)
+        parts = [e for e in parts[0].strip().split(' ')]
+        parts = list(filter(None, parts))
+
+        if parts[0] == 'rpc':  # service element
+            return False
+
+        return len(parts) >= 2
+
     def _is_element_line(self, line):
         if line.count(self.SEMICOLON) == 0:
             return False
@@ -95,10 +127,26 @@ class Detector(Constant):
 
         return line.strip().count(self.SEMICOLON) > 0 and line.strip().count(self.EQUAL_SIGN) > 0
 
+    def _is_service_element(self, line):
+        if not self._is_element_line(line):
+            return False
+
+        # rpc SeatAvailability (SeatAvailabilityRequest) returns (SeatAvailabilityResponse);
+        line = line.strip()
+        return line.startswith('rpc ')
+
     def _is_service_element_line(self, line):
         # rpc SeatAvailability (SeatAvailabilityRequest) returns (SeatAvailabilityResponse);
         line = line.strip()
         return line.startswith('rpc ')
+
+    def _is_map_element(self, line):
+        if not self._is_element_line(line):
+            return False
+
+        # map<string, Project> projects = 3;
+        line = line.strip().replace(' ', '')
+        return line.startswith('map<')
 
     def _is_map_element_line(self, line):
         # map<string, Project> projects = 3;
@@ -107,6 +155,16 @@ class Detector(Constant):
 
     def _is_enum_object(self, line):
         return line.strip().startswith('enum ') and line.strip().count(self.BRACE_LEFT)
+
+    def _is_enum_element(self, line):
+        if not self._is_element_line(line):
+            return False
+
+        parts = line.strip().split(self.EQUAL_SIGN)
+        parts = [e for e in parts[0].strip().split(' ')]
+        parts = list(filter(None, parts))
+
+        return len(parts) == 1
 
     def _is_service_object(self, line):
         return line.strip().startswith('service ') and line.strip().count(self.BRACE_LEFT)
