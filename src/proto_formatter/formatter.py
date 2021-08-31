@@ -10,12 +10,17 @@ from proto_formatter.proto import ProtoEnum
 from proto_formatter.proto import Service
 from proto_formatter.proto import ServiceElement
 from proto_formatter.proto import Syntax
+from proto_formatter.proto import Oneof
+from copy import deepcopy
 
 
 class Formatter():
+    SPACES_BETWEEN_VALUE_COMMENT = 2
+    SPACES_BEFORE_AFTER_EQUAL_SIGN = 1
+    ONE_SPACE = ' '
 
     def __init__(self, indents=2, equal_sign=None, all_top_comments=False):
-        self.indents = indents
+        self.indents_unit = indents
         self.equal_sign = equal_sign
         self.all_top_comments = all_top_comments
 
@@ -24,27 +29,85 @@ class Formatter():
         package_string = self.package_string(obj.package)
         option_string = self.options_string(obj.options)
         imports_string = self.imports_string(obj.imports)
-        messages_string = self.objects_string(obj.objects)
-        contents = [syntax_string, package_string, option_string, imports_string, messages_string]
+
+        all_lines = []
+        for object in obj.objects:
+            lines = []
+            self.format_object_witout_comment(object, lines, indents=0)
+            max_length = self.get_max_length(lines)
+            extra = self.get_max_lengthes(lines)
+            new_lines = []
+            self.format_object(object, new_lines, 0, extra)
+            all_lines.append('\n'.join(new_lines))
+
+        object_string = '\n\n'.join(all_lines)
+        contents = [syntax_string, package_string, option_string, imports_string, object_string]
         contents = list(filter(None, contents))
         content = '\n\n'.join(contents)
         content = content + '\n'
-
+        
         return content
+
+    def get_max_length(self, lines):
+        max = 0
+        for line in lines:
+            if max < len(line):
+                max = len(line)
+
+        return max
+
+    def get_max_lengthes(self, lines):
+        max_equa_sign_index = 0
+        max_length_of_number = 0
+        max_length_of_object_line = 0
+        max_length_of_service_element_line = 0
+        s1 = ''
+        s2 = ''
+        for line in lines:
+            if '=' in line:
+                equa_sign_index = line.index('=')
+                if max_equa_sign_index < equa_sign_index:
+                    max_equa_sign_index = equa_sign_index
+                    s1 = line[:equa_sign_index]
+
+                semicolon_index = line.index(';')
+                number_str = line[equa_sign_index + 1:semicolon_index].strip()
+                number_length = len(number_str)
+                if max_length_of_number < number_length:
+                    max_length_of_number = number_length
+                    s2 = number_str
+            elif line.strip().startswith('rpc'):
+                if max_length_of_service_element_line < len(line):
+                    max_length_of_service_element_line = len(line)
+            else:
+                if max_length_of_object_line < len(line):
+                    max_length_of_object_line = len(line)
+
+        max_length_sample = f'{s1.rstrip()}{self.ONE_SPACE * self.SPACES_BEFORE_AFTER_EQUAL_SIGN}={self.ONE_SPACE * self.SPACES_BEFORE_AFTER_EQUAL_SIGN}{s2};'
+        max_length = max(len(max_length_sample), max_length_of_service_element_line, max_length_of_object_line)
+
+        return {
+            'max_length': max_length,
+            'max_equa_sign_index': max_equa_sign_index,
+            'max_length_of_number': max_length_of_number,
+            'max_length_of_object_line': max_length_of_object_line
+        }
 
     def syntax_string(self, obj: Syntax):
         if not obj:
             return ''
 
         line = f'syntax = "{obj.value}";'
-        return self.make_string(line, obj.comments)
+
+        return self.make_string(line, 0, obj.comments, self.SPACES_BETWEEN_VALUE_COMMENT)
 
     def package_string(self, obj: Package):
         if not obj:
             return ''
 
         line = f'package {obj.value};'
-        return self.make_string(line, obj.comments)
+
+        return self.make_string(line, 0, obj.comments, self.SPACES_BETWEEN_VALUE_COMMENT)
 
     def options_string(self, obj_list):
         if not obj_list:
@@ -56,6 +119,7 @@ class Formatter():
         for obj in obj_list:
             string = self.option_string(obj, max_length)
             string_list.append(string)
+
         return '\n'.join(string_list)
 
     def max_length_of_option(self, obj_list):
@@ -77,7 +141,9 @@ class Formatter():
         else:
             line = f'option {obj.name} = "{obj.value}";'
 
-        return self.make_string(line, obj.comments, max_length)
+        space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
+
+        return self.make_string(line, 0, obj.comments, space_between_number_comment)
 
     def imports_string(self, obj_list):
         if not obj_list:
@@ -89,6 +155,7 @@ class Formatter():
         for obj in obj_list:
             string = self.import_string(obj, max_length)
             string_list.append(string)
+
         return '\n'.join(string_list)
 
     def max_length_of_import(self, obj_list):
@@ -103,167 +170,188 @@ class Formatter():
 
     def import_string(self, obj: Import, max_length):
         line = f'import "{obj.value}";'
-        return self.make_string(line, obj.comments, max_length)
+        space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
 
-    def objects_string(self, obj_list):
-        string_list = []
-        for obj in obj_list:
-            if isinstance(obj, Message):
-                string = self.message_string(obj)
-            if isinstance(obj, ProtoEnum):
-                string = self.enum_string(obj)
-            if isinstance(obj, Service):
-                string = self.service_string(obj)
-            string_list.append(string)
-        return '\n\n'.join(string_list)
+        return self.make_string(line, 0, obj.comments, space_between_number_comment)
 
-    def messages_string(self, obj_list):
-        string_list = []
-        for obj in obj_list:
-            string = self.message_string(obj)
-            string_list.append(string)
-        return '\n\n'.join(string_list)
+    def get_object_keyword(self, obj):
+        if isinstance(obj, Message):
+            return 'message'
+        if isinstance(obj, ProtoEnum):
+            return 'enum'
+        if isinstance(obj, Service):
+            return 'service'
+        if isinstance(obj, Oneof):
+            return 'oneof'
 
-    def message_string(self, obj: Message):
-        line = f'message {obj.name} ' + "{"
-        message_header = self.make_string(line, obj.comments)
-        elements_string = self.message_elemnents_string(obj.elements)
-        s = '\n'.join([message_header, elements_string, '}'])
-        return s
+    def create_object_header(self, obj, indents, no_comment, max_length):
+        obj_keyword = self.get_object_keyword(obj)
+        line = f'{obj_keyword} {obj.name} ' + "{"
 
-    def message_elemnents_string(self, obj_list):
-        max_length = self.max_length_of_message_element(obj_list)
+        space_between_number_comment = 2
+        if max_length:
+            space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
 
-        string_list = []
-        for obj in obj_list:
-            if self.equal_sign:
-                string = self.message_elemnent_string_align_with_equal_sign(obj, max_length)
-            else:
-                string = self.message_elemnent_string(obj, max_length)
-
-            string_list.append(string)
-        return '\n'.join(string_list)
-
-    def message_elemnent_string(self, obj: MessageElement, max_length):
-        if obj.label:
-            line = f'{obj.label} {obj.type} {obj.name} = {obj.number};'
+        if no_comment:
+            return self.make_indented_line(line, indents=indents)
         else:
-            line = f'{obj.type} {obj.name} = {obj.number};'
+            return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-        return self.make_string(line, obj.comments, max_length, indents=self.indents)
+    def get_object_element_class(self, obj):
+        classes = {
+            'message': MessageElement,
+            'enum': EnumElement,
+            'service': ServiceElement,
+            'oneof': MessageElement
+        }
+        return classes[self.get_object_keyword(obj)]
 
-    def message_elemnent_string_align_with_equal_sign(self, obj: MessageElement, max_length):
-        if obj.label:
-            line = f'{obj.label} {obj.type} {obj.name}'
-        else:
-            line = f'{obj.type} {obj.name}'
+    def get_make_object_element_string_method(self, obj):
+        methods = {
+            'message': self.message_elemnent_string,
+            'enum': self.enum_elemnent_string,
+            'service': self.service_elemnent_string,
+            'oneof': self.message_elemnent_string
+        }
+        return methods[self.get_object_keyword(obj)]
 
-        need_fill_space_amount = max_length - len(line)
-        line = f'{line}{" " * need_fill_space_amount} = {obj.number};'
+    def format_object(self, obj, string_list, indents, extra):
+        max_length = extra['max_length']
+        max_equa_sign_index = extra['max_equa_sign_index']
+        max_length_of_number = extra['max_length_of_number']
+        max_length_of_object_line = extra['max_length_of_object_line']
 
-        return self.make_string(line, obj.comments, max_length, indents=self.indents)
+        message_header = self.create_object_header(obj, indents, False, max_length - indents)
+        string_list.append(message_header)
+        element_class = self.get_object_element_class(obj)
+        element_str_method = self.get_make_object_element_string_method(obj)
 
-    def max_length_of_message_element(self, obj_list):
-        max = 0
-        for obj in obj_list:
-            if self.equal_sign:
-                if obj.label:
-                    line = f'{obj.label} {obj.type} {obj.name}'
+        for element in obj.elements:
+            if isinstance(element, element_class):
+                line = element_str_method(
+                    element,
+                    indents + self.indents_unit,
+                    True,
+                    self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                    self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                    self.SPACES_BETWEEN_VALUE_COMMENT
+                )
+
+                if self.equal_sign:
+                    line_without_number = line.split('=')[0].rstrip()
+                    space_between_name_equal_sign = max_equa_sign_index - len(line_without_number)
+
+                    if hasattr(element, 'number'):
+                        space_between_number_comment = max_length - max_equa_sign_index - len('=') - len(';') - len(
+                            element.number) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
+                    elif line.strip().startswith('rpc'):
+                        space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
+                    else:
+                        space_between_number_comment = max_length - len(
+                            line) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
+
+                    string = element_str_method(
+                        element,
+                        indents + self.indents_unit,
+                        False,
+                        space_between_name_equal_sign,
+                        self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                        space_between_number_comment
+                    )
                 else:
-                    line = f'{obj.type} {obj.name}'
+                    space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
+                    string = element_str_method(
+                        element,
+                        indents + self.indents_unit,
+                        False,
+                        self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                        self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                        space_between_number_comment
+                    )
+
+                string_list.append(string)
             else:
-                if obj.label:
-                    line = f'{obj.label} {obj.type} {obj.name} = {obj.number};'
-                else:
-                    line = f'{obj.type} {obj.name} = {obj.number};'
+                self.format_object(element, string_list, indents + self.indents_unit, extra)
 
-            if max < len(line):
-                max = len(line)
+        message_rear = self.make_string('}', indents, [], self.SPACES_BETWEEN_VALUE_COMMENT)
+        string_list.append(message_rear)
 
-        return max
+    def format_object_witout_comment(self, obj, string_list, indents):
+        message_header = self.create_object_header(obj, no_comment=True, indents=indents, max_length=None)
+        string_list.append(message_header)
+        element_class = self.get_object_element_class(obj)
+        element_str_method = self.get_make_object_element_string_method(obj)
 
-    def enum_string(self, obj: ProtoEnum):
-        line = f'enum {obj.name} ' + "{"
-        message_header = self.make_string(line, obj.comments)
-        elements_string = self.enum_elemnents_string(obj.elements)
-        s = '\n'.join([message_header, elements_string, '}'])
-        return s
+        for element in obj.elements:
+            if isinstance(element, element_class):
+                string = element_str_method(
+                    element,
+                    indents + self.indents_unit,
+                    True,
+                    self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                    self.SPACES_BEFORE_AFTER_EQUAL_SIGN,
+                    self.SPACES_BETWEEN_VALUE_COMMENT
+                )
+                string_list.append(string)
+            else:
+                self.format_object_witout_comment(element, string_list, indents=indents + self.indents_unit)
 
-    def enum_elemnents_string(self, obj_list):
-        if self.equal_sign:
-            max_length = self.max_length_of_enum_element_name(obj_list)
+        message_rear = self.make_indented_line('}', indents=indents)
+        string_list.append(message_rear)
+
+    def message_elemnent_string(
+            self,
+            obj: MessageElement,
+            indents,
+            no_comment,
+            space_between_name_equal_sign,
+            space_between_equal_sign_number,
+            space_between_number_comment
+    ):
+        if obj.label:
+            line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
         else:
-            max_length = self.max_length_of_enum_element(obj_list)
+            line = f'{obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
 
-        string_list = []
-        for obj in obj_list:
-            string = self.enum_elemnent_string(obj, max_length)
-            string_list.append(string)
-        return '\n'.join(string_list)
-
-    def enum_elemnent_string(self, obj: EnumElement, max_length):
-        if self.equal_sign:
-            line = f'{obj.name}'
-            need_fill_space_amount = max_length - len(line)
-            line = f'{line}{" " * need_fill_space_amount} = {obj.number};'
+        if no_comment:
+            return self.make_indented_line(line, indents)
         else:
-            line = f'{obj.name} = {obj.number};'
+            return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-        return self.make_string(line, obj.comments, max_length, indents=self.indents)
+    def enum_elemnent_string(
+            self,
+            obj: EnumElement,
+            indents,
+            no_comment,
+            space_between_name_equal_sign,
+            space_between_equal_sign_number,
+            space_between_number_comment
+    ):
+        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
 
-    def max_length_of_enum_element(self, obj_list):
-        max = 0
-        for obj in obj_list:
-            line = f'{obj.name} = {obj.number};'
+        if no_comment:
+            return self.make_indented_line(line, indents=indents)
+        else:
+            return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-            if max < len(line):
-                max = len(line)
-
-        return max
-
-    def max_length_of_enum_element_name(self, obj_list):
-        max = 0
-        for obj in obj_list:
-            line = f'{obj.name}'
-
-            if max < len(line):
-                max = len(line)
-
-        return max
-
-    def service_string(self, obj: ProtoEnum):
-        line = f'service {obj.name} ' + "{"
-        message_header = self.make_string(line, obj.comments)
-        elements_string = self.service_elemnents_string(obj.elements)
-        s = '\n'.join([message_header, elements_string, '}'])
-        return s
-
-    def service_elemnents_string(self, obj_list):
-        max_length = self.max_length_of_service_element(obj_list)
-
-        string_list = []
-        for obj in obj_list:
-            string = self.service_elemnent_string(obj, max_length)
-            string_list.append(string)
-        return '\n'.join(string_list)
-
-    def service_elemnent_string(self, obj: ServiceElement, max_length):
+    def service_elemnent_string(
+            self,
+            obj: ServiceElement,
+            indents,
+            no_comment,
+            space_between_name_equal_sign,
+            space_between_equal_sign_number,
+            space_between_number_comment
+    ):
         # rpc SeatAvailability (SeatAvailabilityRequest) returns (SeatAvailabilityResponse);
         line = f'{obj.label} {obj.name} ({obj.request}) returns ({obj.response});'
 
-        return self.make_string(line, obj.comments, max_length, indents=self.indents)
+        if no_comment:
+            return self.make_indented_line(line, indents=indents)
+        else:
+            return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-    def max_length_of_service_element(self, obj_list):
-        max = 0
-        for obj in obj_list:
-            line = f'{obj.label} {obj.name} ({obj.request}) returns ({obj.response});'
-
-            if max < len(line):
-                max = len(line)
-
-        return max
-
-    def make_string(self, value_line, comments, max_length=None, indents=0):
+    def make_string(self, value_line, indents, comments, space_between_number_comment):
         lines = []
         top_comment_lines = []
         right_comment = ''
@@ -289,15 +377,14 @@ class Formatter():
 
         lines = top_comment_lines
         if right_comment:
-            if max_length is not None:
-                need_fill_space_amount = max_length - len(value_line)
-                line = f'{value_line}{" " * need_fill_space_amount}  // {right_comment}'
-            else:
-                line = f'{value_line}  // {right_comment}'
+            line = f'{value_line}{self.ONE_SPACE * space_between_number_comment}// {right_comment}'
             lines.append(line)
         else:
             lines.append(value_line)
 
-        indented_lines = [f'{" " * indents}{line}' for line in lines]
+        indented_lines = [f'{self.ONE_SPACE * indents}{line}' for line in lines]
         string = '\n'.join(indented_lines)
         return string
+
+    def make_indented_line(self, line, indents=0):
+        return f'{self.ONE_SPACE * indents}{line}'
