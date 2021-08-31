@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 from proto_formatter import format_file
 
 test_path = os.path.dirname(os.path.realpath(__file__))
@@ -27,50 +28,102 @@ def write_file(file_path, content):
         return f.write(content)
 
 
+def create_test_case_name(config):
+    return f'indents_{config["indents"]}_all_top_comments_{config["all_top_comments"]}_equal_sign_{config["equal_sign"]}'.lower()
+
+
+def create_formatted_file_name(test_file, config):
+    part = create_test_case_name(config)
+    return f'formatted_{test_file.replace(".proto", "")}_{part}.proto'.lower()
+
+
 def make_test_data():
-    c = [
+    test_files = ['test_data_1.proto', 'test_data_2.proto', 'test_data_3.proto', 'test_data_4.proto']
+    configs = [
         {
-            'file_name': 'formatted_test_data_1.proto',
             'indents': 2,
             'all_top_comments': False,
             'equal_sign': False
         },
         {
-            'file_name': 'formatted_test_data_1_align_with_equal_sign.proto',
             'indents': 2,
             'all_top_comments': False,
             'equal_sign': True
         },
         {
-            'file_name': 'formatted_test_data_1_align_with_equal_sign_4_indents.proto',
             'indents': 4,
             'all_top_comments': False,
             'equal_sign': True
         },
         {
-            'file_name': 'formatted_test_data_1_align_with_4_indents_all_top_comments.proto',
             'indents': 4,
             'all_top_comments': True,
             'equal_sign': False
         },
         {
-            'file_name': 'formatted_test_data_1_align_with_equal_sign_4_indents_all_top_comments.proto',
             'indents': 4,
             'all_top_comments': True,
             'equal_sign': True
         }
     ]
-    for e in c:
-        format_file(
-            fp='test_data_1.proto',
-            indents=e['indents'],
-            all_top_comments=e['all_top_comments'],
-            equal_sign=e['equal_sign'],
-            new_fp=e['file_name']
-        )
+
+    test_cases = []
+    for test_file in test_files:
+        print(test_file)
+        for config in configs:
+            formatted_file_name = create_formatted_file_name(test_file, config)
+            format_file(
+                fp=test_file,
+                indents=config['indents'],
+                all_top_comments=config['all_top_comments'],
+                equal_sign=config['equal_sign'],
+                new_fp=formatted_file_name
+            )
+
+            c = deepcopy(config)
+            c.update({
+                'test_case_name': formatted_file_name.replace("formatted_test_data_", "").replace(".proto", ""),
+                'original_file': test_file,
+                'formatted_file': formatted_file_name
+            })
+            test_cases.append(c)
+
+    return test_cases
+
+
+def create_test_cases(test_cases):
+    content = """import os
+from proto_formatter import format_str
+from helper import read_proto, read_file, test_path
+
+
+"""
+
+    cases = []
+
+    case_template = """def test_format_str_{}():
+    expected_text = read_proto('{}')
+
+    original_file_path = os.path.join(test_path, '{}')
+    proto_str = read_file(original_file_path)
+    actual_text = format_str(proto_str, indents={}, all_top_comments={}, equal_sign={})
+
+    assert expected_text == actual_text"""
+
+    for config in test_cases:
+        case = case_template.format(config['test_case_name'], config['formatted_file'], config['original_file'],
+                                    config['indents'], config['all_top_comments'], config['equal_sign'])
+        cases.append(case)
+
+    content = content + "\n\n\n".join(cases) + "\n"
+
+    write_file('test_format_str.py', content)
 
 
 if __name__ == '__main__':
     print('create test data files...')
-    make_test_data()
+    test_data = make_test_data()
+
+    print('create test cases...')
+    create_test_cases(test_data)
     print('Done')

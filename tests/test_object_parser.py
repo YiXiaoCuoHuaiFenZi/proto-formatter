@@ -2,13 +2,10 @@ import os
 from proto_formatter.object_parser import ObjectParser
 from helper import test_path, read_lines
 
-original_file_path_1 = os.path.join(test_path, 'test_data_1.proto')
-original_file_path_2 = os.path.join(test_path, 'test_data_2.proto')
-original_file_path_3 = os.path.join(test_path, 'test_data_3.proto')
 
-
-def test_parse_object_netesed():
-    lines = read_lines(original_file_path_3)
+def test_parse_object_nested():
+    original_file_path = os.path.join(test_path, 'test_data_3.proto')
+    lines = read_lines(original_file_path)
     op = ObjectParser()
     op.parse(lines)
 
