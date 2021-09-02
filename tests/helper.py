@@ -29,7 +29,7 @@ def write_file(file_path, content):
 
 
 def create_test_case_name(config):
-    return f'indents_{config["indents"]}_all_top_comments_{config["all_top_comments"]}_equal_sign_{config["equal_sign"]}'.lower()
+    return f'indents_{config["indents"]}_all_top_comments_{config["all_top_comments"]}_equal_sign_{config["equal_sign"]}_flatten_{config["flatten"]}'.lower()
 
 
 def create_formatted_file_name(test_file, config):
@@ -43,27 +43,38 @@ def make_test_data():
         {
             'indents': 2,
             'all_top_comments': False,
-            'equal_sign': False
+            'equal_sign': False,
+            'flatten': False
         },
         {
             'indents': 2,
             'all_top_comments': False,
-            'equal_sign': True
+            'equal_sign': True,
+            'flatten': True
         },
         {
             'indents': 4,
             'all_top_comments': False,
-            'equal_sign': True
+            'equal_sign': True,
+            'flatten': False
         },
         {
             'indents': 4,
             'all_top_comments': True,
-            'equal_sign': False
+            'equal_sign': False,
+            'flatten': False
         },
         {
             'indents': 4,
             'all_top_comments': True,
-            'equal_sign': True
+            'equal_sign': True,
+            'flatten': False
+        },
+        {
+            'indents': 4,
+            'all_top_comments': True,
+            'equal_sign': True,
+            'flatten': True
         }
     ]
 
@@ -76,6 +87,7 @@ def make_test_data():
                 indents=config['indents'],
                 all_top_comments=config['all_top_comments'],
                 equal_sign=config['equal_sign'],
+                flatten=config['flatten'],
                 new_fp=formatted_file_name
             )
 
@@ -105,14 +117,21 @@ from helper import read_proto, read_file, test_path
 
     original_file_path = os.path.join(test_path, '{}')
     proto_str = read_file(original_file_path)
-    actual_text = format_str(proto_str, indents={}, all_top_comments={}, equal_sign={})
+    actual_text = format_str(proto_str, indents={}, all_top_comments={}, equal_sign={}, flatten={})
 
     assert expected_text == actual_text"""
 
     for config in test_cases:
         print(f"create test case {config['test_case_name']}")
-        case = case_template.format(config['test_case_name'], config['formatted_file'], config['original_file'],
-                                    config['indents'], config['all_top_comments'], config['equal_sign'])
+        case = case_template.format(
+            config['test_case_name'],
+            config['formatted_file'],
+            config['original_file'],
+            config['indents'],
+            config['all_top_comments'],
+            config['equal_sign'],
+            config['flatten']
+        )
         cases.append(case)
 
     content = content + "\n\n\n".join(cases) + "\n"
