@@ -1,12 +1,12 @@
 from proto_formatter.comment import CommentParser
-from proto_formatter.proto import Package
-from proto_formatter.proto import ProtoBufStructure
+from proto_formatter.proto_structures import Package
+from proto_formatter.protobuf import Protobuf
 
 
 class PackageParser():
 
     @classmethod
-    def parse_and_add(cls, proto_obj: ProtoBufStructure, line, top_comment_list):
+    def parse_and_add(cls, proto_obj: Protobuf, line, top_comment_list):
         if proto_obj.package is not None:
             raise 'multiple package detected!'
 

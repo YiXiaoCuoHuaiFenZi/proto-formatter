@@ -1,4 +1,6 @@
 from enum import Enum
+
+
 # from proto_formatter.formatter import Formatter
 
 
@@ -55,6 +57,7 @@ class Message():
         self.elements = elements
         self.comments = comments
 
+
 class OneofElement():
     def __init__(self, type, name, number, label=None, comments=[]):
         self.label = label
@@ -69,6 +72,7 @@ class Oneof():
         self.name = name
         self.elements = elements
         self.comments = comments
+
 
 class EnumElement():
     def __init__(self, name, number, comments=[]):
@@ -99,16 +103,3 @@ class Service():
         self.name = name
         self.elements = elements
         self.comments = comments
-
-
-class ProtoBufStructure():
-    def __init__(self):
-        self.syntax = None
-        self.package = None
-        self.options = []
-        self.imports = []
-        self.objects = []
-        # self.formatter = Formatter()
-
-    # def to_string(self):
-    #     return self.formatter.to_string(self)

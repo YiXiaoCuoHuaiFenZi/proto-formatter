@@ -1,13 +1,13 @@
 from proto_formatter.comment import CommentParser
 from proto_formatter.constant import Constant
-from proto_formatter.proto import Import
-from proto_formatter.proto import ProtoBufStructure
+from proto_formatter.proto_structures import Import
+from proto_formatter.protobuf import Protobuf
 
 
 class ImportParser(Constant):
 
     @classmethod
-    def parse_and_add(cls, proto_obj: ProtoBufStructure, line, top_comment_list):
+    def parse_and_add(cls, proto_obj: Protobuf, line, top_comment_list):
         new_import = cls.parse_import(line, top_comment_list)
         for existing_import in proto_obj.imports:
             if existing_import.value == new_import.value:

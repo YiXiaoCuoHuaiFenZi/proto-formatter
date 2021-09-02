@@ -3,20 +3,20 @@ from enum import Enum
 from proto_formatter.detector import Detector
 from proto_formatter.comment import CommentParser
 from proto_formatter.constant import Constant
-from proto_formatter.proto import EnumElement
-from proto_formatter.proto import Import
-from proto_formatter.proto import Message
-from proto_formatter.proto import MessageElement
-from proto_formatter.proto import Option
-from proto_formatter.proto import Package
-from proto_formatter.proto import Position
-from proto_formatter.proto import ProtoBufStructure
-from proto_formatter.proto import ProtoEnum
-from proto_formatter.proto import Service
-from proto_formatter.proto import ServiceElement
-from proto_formatter.proto import Syntax
-from proto_formatter.proto import Oneof
-from proto_formatter.proto import OneofElement
+from proto_formatter.proto_structures import EnumElement
+from proto_formatter.proto_structures import Import
+from proto_formatter.proto_structures import Message
+from proto_formatter.proto_structures import MessageElement
+from proto_formatter.proto_structures import Option
+from proto_formatter.proto_structures import Package
+from proto_formatter.proto_structures import Position
+from proto_formatter.proto_structures import ProtoEnum
+from proto_formatter.proto_structures import Service
+from proto_formatter.proto_structures import ServiceElement
+from proto_formatter.proto_structures import Syntax
+from proto_formatter.proto_structures import Oneof
+from proto_formatter.proto_structures import OneofElement
+from proto_formatter.protobuf import Protobuf
 from proto_formatter.util import remove_prefix, remove_suffix
 
 
@@ -43,7 +43,7 @@ class ObjectParser(Constant):
     def parse_obj_field(cls, line, top_comments):
         raise NotImplementedError("Element parse not implemented.")
 
-    def parse_and_add(self, proto_obj: ProtoBufStructure, lines, top_comment_list):
+    def parse_and_add(self, proto_obj: Protobuf, lines, top_comment_list):
         self.parse(lines, top_comment_list, True)
         proto_obj.objects.append(self.obj)
 

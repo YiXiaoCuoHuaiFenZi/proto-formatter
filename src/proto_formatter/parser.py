@@ -7,14 +7,14 @@ from proto_formatter.import_parser import ImportParser
 from proto_formatter.object_parser import ObjectParser
 from proto_formatter.option_parser import OptionParser
 from proto_formatter.package_parser import PackageParser
-from proto_formatter.proto import ProtoBufStructure
+from proto_formatter.protobuf import Protobuf
 from proto_formatter.syntax_parser import SyntaxParser
 from proto_formatter.util import remove_prefix, remove_suffix
 
 
 class ProtoParser(Constant):
     def __init__(self):
-        self.protobuf_obj = ProtoBufStructure()
+        self.protobuf_obj = Protobuf()
 
     def load(self, fp):
         """
