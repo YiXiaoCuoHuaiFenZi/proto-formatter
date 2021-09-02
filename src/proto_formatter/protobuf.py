@@ -28,11 +28,16 @@ class Protobuf():
         self.indents_unit = 2
         self.equal_sign = None
         self.all_top_comments = False
+        self.flatten = False
 
-    def to_string(self, indents=2, equal_sign=None, all_top_comments=False):
+    def to_string(self, indents=2, equal_sign=None, all_top_comments=False, flatten=False):
+        if flatten:
+            self.flatten_objects()
+
         self.indents_unit = indents
         self.equal_sign = equal_sign
         self.all_top_comments = all_top_comments
+        self.flatten = flatten
 
         syntax_string = self.syntax_string()
         package_string = self.package_string()
@@ -56,6 +61,34 @@ class Protobuf():
         content = content + '\n'
 
         return content
+
+    def flatten_objects(self):
+        new_objects = []
+
+        for obj in self.objects:
+            new_obj = deepcopy(obj)
+            new_obj.elements = []
+            for element in obj.elements:
+                if isinstance(element, (Message, ProtoEnum, Service)):
+                    self.flatten_object(element, new_objects)
+                else:
+                    new_obj.elements.append(element)
+
+            new_objects.append(new_obj)
+
+        self.objects = new_objects
+
+    def flatten_object(self, obj, new_objects: list):
+        new_obj = deepcopy(obj)
+        new_obj.elements = []
+
+        for element in obj.elements:
+            if isinstance(element, (Message, ProtoEnum, Service)):
+                self.flatten_object(element, new_objects)
+            else:
+                new_obj.elements.append(element)
+
+        new_objects.append(new_obj)
 
     def get_max_length(self, lines):
         max = 0

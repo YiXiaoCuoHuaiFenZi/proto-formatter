@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2021-09-02
+### CHANGED
+- Can flatten the objects
+
 ## [0.1.1] - 2021-09-02
 ### CHANGED
 - Move format methods to Protobuf
