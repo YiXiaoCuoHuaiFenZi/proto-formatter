@@ -6,7 +6,7 @@ Protocol Buffers file formatter.
 pip install proto-formatter
 ```
 ## Usage
-- Format protobuf file using default config: indents=2, all_top_comments=False, equal_sign=False, flattend=False, new_fp=None.
+- Format protobuf file using default config: indents=2, all_top_comments=False, equal_sign=False, flatten=False, new_fp=None.
 Original protobuf file `test.proto` will be rewritten with formatted content.
 ```python
 from proto_formatter import format_file
@@ -18,7 +18,7 @@ Original protobuf file `test.proto` not be rewritten, create new protobuf file `
 ```python
 from proto_formatter import format_file
 
-format_file('test.proto', indents=4, all_top_comments=True, equal_sign=True, flattend=False, new_fp='formatted.proto')
+format_file('test.proto', indents=4, all_top_comments=True, equal_sign=True, flatten=False, new_fp='formatted.proto')
 ```
 - Format protobuf string align with equal sign: equal_sign=True, other configs are default values.
 ```python
