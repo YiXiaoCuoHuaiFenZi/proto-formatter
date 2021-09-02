@@ -1,4 +1,3 @@
-from proto_formatter.formatter import Formatter
 from proto_formatter.parser import ProtoParser
 
 
@@ -19,14 +18,14 @@ def format_file(fp, indents=2, all_top_comments=False, equal_sign=False, new_fp=
     """
     parser = ProtoParser()
     protobuf_obj = parser.load(fp=fp)
-    formatter = Formatter(indents=indents, all_top_comments=all_top_comments, equal_sign=equal_sign)
-    content = formatter.to_string(protobuf_obj)
+    content = protobuf_obj.to_string(indents=indents, all_top_comments=all_top_comments, equal_sign=equal_sign)
 
     if new_fp:
         fp = new_fp
 
     with open(fp, 'w') as f:
         return f.write(content)
+
 
 def format_str(proto_str, indents=2, all_top_comments=False, equal_sign=False):
     """
@@ -43,7 +42,6 @@ def format_str(proto_str, indents=2, all_top_comments=False, equal_sign=False):
     """
     parser = ProtoParser()
     protobuf_obj = parser.loads(proto_str=proto_str.strip())
-    formatter = Formatter(indents=indents, all_top_comments=all_top_comments, equal_sign=equal_sign)
+    content = protobuf_obj.to_string(indents=indents, all_top_comments=all_top_comments, equal_sign=equal_sign)
 
-    return formatter.to_string(protobuf_obj)
-
+    return content

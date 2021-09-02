@@ -69,7 +69,6 @@ def make_test_data():
 
     test_cases = []
     for test_file in test_files:
-        print(test_file)
         for config in configs:
             formatted_file_name = create_formatted_file_name(test_file, config)
             format_file(
@@ -111,6 +110,7 @@ from helper import read_proto, read_file, test_path
     assert expected_text == actual_text"""
 
     for config in test_cases:
+        print(f"create test case {config['test_case_name']}")
         case = case_template.format(config['test_case_name'], config['formatted_file'], config['original_file'],
                                     config['indents'], config['all_top_comments'], config['equal_sign'])
         cases.append(case)

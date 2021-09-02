@@ -1,37 +1,46 @@
-from proto_formatter.proto import EnumElement
-from proto_formatter.proto import Import
-from proto_formatter.proto import Message
-from proto_formatter.proto import MessageElement
-from proto_formatter.proto import Option
-from proto_formatter.proto import Package
-from proto_formatter.proto import Position
-from proto_formatter.proto import ProtoBufStructure
-from proto_formatter.proto import ProtoEnum
-from proto_formatter.proto import Service
-from proto_formatter.proto import ServiceElement
-from proto_formatter.proto import Syntax
-from proto_formatter.proto import Oneof
+from proto_formatter.proto_structures import EnumElement
+from proto_formatter.proto_structures import Import
+from proto_formatter.proto_structures import Message
+from proto_formatter.proto_structures import MessageElement
+from proto_formatter.proto_structures import Option
+from proto_formatter.proto_structures import Package
+from proto_formatter.proto_structures import Position
+from proto_formatter.proto_structures import ProtoEnum
+from proto_formatter.proto_structures import Service
+from proto_formatter.proto_structures import ServiceElement
+from proto_formatter.proto_structures import Syntax
+from proto_formatter.proto_structures import Oneof
 from copy import deepcopy
 
 
-class Formatter():
+class Protobuf():
     SPACES_BETWEEN_VALUE_COMMENT = 2
     SPACES_BEFORE_AFTER_EQUAL_SIGN = 1
     ONE_SPACE = ' '
 
-    def __init__(self, indents=2, equal_sign=None, all_top_comments=False):
+    def __init__(self):
+        self.syntax = None
+        self.package = None
+        self.options = []
+        self.imports = []
+        self.objects = []
+
+        self.indents_unit = 2
+        self.equal_sign = None
+        self.all_top_comments = False
+
+    def to_string(self, indents=2, equal_sign=None, all_top_comments=False):
         self.indents_unit = indents
         self.equal_sign = equal_sign
         self.all_top_comments = all_top_comments
 
-    def to_string(self, obj: ProtoBufStructure):
-        syntax_string = self.syntax_string(obj.syntax)
-        package_string = self.package_string(obj.package)
-        option_string = self.options_string(obj.options)
-        imports_string = self.imports_string(obj.imports)
+        syntax_string = self.syntax_string()
+        package_string = self.package_string()
+        option_string = self.options_string()
+        imports_string = self.imports_string()
 
         all_lines = []
-        for object in obj.objects:
+        for object in self.objects:
             lines = []
             self.format_object_witout_comment(object, lines, indents=0)
             max_length = self.get_max_length(lines)
@@ -45,7 +54,7 @@ class Formatter():
         contents = list(filter(None, contents))
         content = '\n\n'.join(contents)
         content = content + '\n'
-        
+
         return content
 
     def get_max_length(self, lines):
@@ -93,74 +102,74 @@ class Formatter():
             'max_length_of_object_line': max_length_of_object_line
         }
 
-    def syntax_string(self, obj: Syntax):
-        if not obj:
+    def syntax_string(self):
+        if not self.syntax:
             return ''
 
-        line = f'syntax = "{obj.value}";'
+        line = f'syntax = "{self.syntax.value}";'
 
-        return self.make_string(line, 0, obj.comments, self.SPACES_BETWEEN_VALUE_COMMENT)
+        return self.make_string(line, 0, self.syntax.comments, self.SPACES_BETWEEN_VALUE_COMMENT)
 
-    def package_string(self, obj: Package):
-        if not obj:
+    def package_string(self):
+        if not self.package:
             return ''
 
-        line = f'package {obj.value};'
+        line = f'package {self.package.value};'
 
-        return self.make_string(line, 0, obj.comments, self.SPACES_BETWEEN_VALUE_COMMENT)
+        return self.make_string(line, 0, self.package.comments, self.SPACES_BETWEEN_VALUE_COMMENT)
 
-    def options_string(self, obj_list):
-        if not obj_list:
+    def options_string(self):
+        if not self.options:
             return ''
 
-        max_length = self.max_length_of_option(obj_list)
+        max_length = self.max_length_of_option()
 
         string_list = []
-        for obj in obj_list:
-            string = self.option_string(obj, max_length)
+        for option in self.options:
+            string = self.option_string(option, max_length)
             string_list.append(string)
 
         return '\n'.join(string_list)
 
-    def max_length_of_option(self, obj_list):
+    def max_length_of_option(self):
         max = 0
-        for obj in obj_list:
-            if obj.value == 'true' or obj.value == 'false':
-                line = f'option {obj.name} = {obj.value};'
+        for option in self.options:
+            if option.value == 'true' or option.value == 'false':
+                line = f'option {option.name} = {option.value};'
             else:
-                line = f'option {obj.name} = "{obj.value}";'
+                line = f'option {option.name} = "{option.value}";'
 
             if max < len(line):
                 max = len(line)
 
         return max
 
-    def option_string(self, obj: Option, max_length):
-        if obj.value == 'true' or obj.value == 'false':
-            line = f'option {obj.name} = {obj.value};'
+    def option_string(self, option: Option, max_length):
+        if option.value == 'true' or option.value == 'false':
+            line = f'option {option.name} = {option.value};'
         else:
-            line = f'option {obj.name} = "{obj.value}";'
+            line = f'option {option.name} = "{option.value}";'
 
         space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
 
-        return self.make_string(line, 0, obj.comments, space_between_number_comment)
+        return self.make_string(line, 0, option.comments, space_between_number_comment)
 
-    def imports_string(self, obj_list):
-        if not obj_list:
+    def imports_string(self):
+        if not self.imports:
             return ''
 
-        max_length = self.max_length_of_import(obj_list)
+        max_length = self.max_length_of_import()
 
         string_list = []
-        for obj in obj_list:
+        for obj in self.imports:
             string = self.import_string(obj, max_length)
             string_list.append(string)
 
         return '\n'.join(string_list)
 
-    def max_length_of_import(self, obj_list):
+    def max_length_of_import(self):
         max = 0
-        for obj in obj_list:
+        for obj in self.imports:
             line = f'import "{obj.value}";'
 
             if max < len(line):
