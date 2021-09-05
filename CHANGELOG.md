@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2021-09-05
+### Fix
+- Fix issue when specified max comment length when top comment is false
+
 ## [0.1.4] - 2021-09-05
 ### Fix
 - Fix issue when specified max comment length for right comment

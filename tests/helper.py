@@ -88,6 +88,13 @@ def make_test_data():
             'equal_sign': True,
             'flatten': True,
             'comment_max_length': 50
+        },
+        {
+            'indents': 4,
+            'all_top_comments': False,
+            'equal_sign': True,
+            'flatten': True,
+            'comment_max_length': 50
         }
     ]
 
