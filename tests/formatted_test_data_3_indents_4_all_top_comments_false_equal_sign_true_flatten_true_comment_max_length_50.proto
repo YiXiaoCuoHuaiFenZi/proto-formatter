@@ -1,0 +1,84 @@
+message Inner {      // Level 2
+    int64 ival = 1;  // ival ivalivalivalivalivalivalival
+    bool booly = 2;  // urrency must be the same as
+}
+
+message MiddleAA {      // Level 1
+    bool booly_aa = 1;  // urrency must be the same as
+}
+
+/*
+BaggageType
+*/
+enum BaggageTypeA {
+    BAGGAGE_TYPE_UNSPECIFIED = 0;  // BAGGAGE_TYPE_UNSPECIFIED
+    BAGGAGE_TYPE_CARRY_ON    = 1;  // BAGGAGE_TYPE_CARRY_ON
+    /*
+    asdfgh
+    */
+    BAGGAGE_TYPE_CHECKED     = 2;  // BAGGAGE_TYPE_CHECKED
+}
+
+/*
+Don't change the field numbers for any existing
+fields.
+*/
+message Inner {                         // Level 2
+    int32 ival                    = 1;  // asdfgdhjkl; Chronological
+    bool booly                    = 2;  // dewq urrency must be the same as
+    map<string, Project> projects = 3;  // map
+    /*
+    test_oneof
+    */
+    oneof test_oneof {
+        string name               = 4;
+        SubMessage sub_message    = 9;
+    }
+}
+
+/*
+If an existing message type no longer meets all
+your needs – for example, you'd like the message
+format to have an extra field – but you'd still
+like to use code created with the old format,
+don't worry! It's very simple to update message
+types without breaking any of your existing
+code. Just remember the following rules:
+*/
+message MiddleBB {  // Level 1
+}
+
+/*
+The fasdghjk adsfgh
+Chronological work  legs
+*/
+message Outer {  // Level 0
+}
+
+/*
+BaggageType
+*/
+enum BaggageTypeB {
+    BAGGAGE_TYPE_UNSPECIFIED = 0;  // BAGGAGE_TYPE_UNSPECIFIED
+    BAGGAGE_TYPE_CARRY_ON    = 1;  // BAGGAGE_TYPE_CARRY_ON
+    /*
+    asdfgh
+    */
+    BAGGAGE_TYPE_CHECKED     = 2;  // BAGGAGE_TYPE_CHECKED
+}
+
+message Outer2 {     // Level 2
+    int64 ival = 1;  // ival ivalivalivalivalivalivalival
+    bool booly = 2;  // urrency must be the same as
+}
+
+/*
+The price Demo  rpc service
+*/
+service Demo {
+    /*
+    asdfgf
+    */
+    rpc DemoA (DemoRequest) returns (DemoResponse);  // sadfdDemo
+    rpc DemoB (DemoRequest) returns (DemoResponse);  // Demo
+}
