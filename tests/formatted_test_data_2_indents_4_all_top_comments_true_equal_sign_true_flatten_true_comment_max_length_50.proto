@@ -2,7 +2,8 @@
 asdddddddd
 price demo  API request message
 sdfghjk
-The price sdfgfhg API request message //asd /*asdfghj*/ AS
+The price sdfgfhg API request message //asd
+/*asdfghj*/ AS
 */
 syntax = "proto3";
 
@@ -75,7 +76,8 @@ message DemoRequestA {
     */
     repeated common.Tiger work_legs              = 3;
     /*
-    Use to validate the work  price, the currency must be the same as
+    Use to validate the work  price, the currency
+    must be the same as
     */
     common.Money quote_price                     = 4;
 }
@@ -105,7 +107,8 @@ message DemoRequestB {
     */
     repeated common.Tiger work_legs              = 3;
     /*
-    Use to validate the work  price, the currency must be the same as
+    Use to validate the work  price, the currency
+    must be the same as
     */
     common.Money quote_price                     = 4;
     /*
@@ -155,7 +158,8 @@ message DemoRequestC {
     */
     repeated common.Tiger work_legs              = 3;
     /*
-    Use to validate the work  price, the currency must be the same as
+    Use to validate the work  price, the currency
+    must be the same as
     */
     common.Money quote_price                     = 4;
     /*

@@ -420,9 +420,12 @@ class Protobuf():
                     if self.comment_max_length is not None:
                         for l in text_lines:
                             new_text_lines.extend(to_lines(l, self.comment_max_length))
-                    text_lines = new_text_lines
+                    new_text_lines
 
-                    top_comment_lines.append(comment.text)
+                    if self.comment_max_length is not None:
+                        top_comment_lines.extend(new_text_lines)
+                    else:
+                        top_comment_lines.extend(text_lines)
 
                     right_comment = ''
         else:
