@@ -10,7 +10,7 @@ def test_format_file_align():
 
     original_file_path = os.path.join(test_path, 'test_data_2.proto')
     format_file(original_file_path, new_fp=new_fp)
-    expected_text = read_proto('formatted_test_data_1_indents_2_all_top_comments_false_equal_sign_false_flatten_false.proto')
+    expected_text = read_proto('formatted_test_data_2_indents_2_all_top_comments_false_equal_sign_false_flatten_false_comment_max_length_none.proto')
     actual_text = read_proto(new_fp)
 
     if os.path.exists(new_fp):

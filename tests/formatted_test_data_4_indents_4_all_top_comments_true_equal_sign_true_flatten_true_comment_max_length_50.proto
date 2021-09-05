@@ -93,7 +93,8 @@ enum BaggageTypeA {
 }
 
 /*
-Don't change the field numbers for any existing fields.
+Don't change the field numbers for any existing
+fields.
 Level 2
 */
 message Inner {
@@ -119,7 +120,13 @@ message Inner {
 }
 
 /*
-If an existing message type no longer meets all your needs – for example, you'd like the message format to have an extra field – but you'd still like to use code created with the old format, don't worry! It's very simple to update message types without breaking any of your existing code. Just remember the following rules:
+If an existing message type no longer meets all
+your needs – for example, you'd like the message
+format to have an extra field – but you'd still
+like to use code created with the old format,
+don't worry! It's very simple to update message
+types without breaking any of your existing
+code. Just remember the following rules:
 Level 1
 */
 message MiddleBB {

@@ -10,6 +10,7 @@ from proto_formatter.proto_structures import Service
 from proto_formatter.proto_structures import ServiceElement
 from proto_formatter.proto_structures import Syntax
 from proto_formatter.proto_structures import Oneof
+from proto_formatter.util import to_lines
 from copy import deepcopy
 
 
@@ -29,8 +30,9 @@ class Protobuf():
         self.equal_sign = None
         self.all_top_comments = False
         self.flatten = False
+        self.comment_max_length = None
 
-    def to_string(self, indents=2, equal_sign=None, all_top_comments=False, flatten=False):
+    def to_string(self, indents=2, equal_sign=None, all_top_comments=False, flatten=False, comment_max_length=None):
         if flatten:
             self.flatten_objects()
 
@@ -38,6 +40,7 @@ class Protobuf():
         self.equal_sign = equal_sign
         self.all_top_comments = all_top_comments
         self.flatten = flatten
+        self.comment_max_length = comment_max_length
 
         syntax_string = self.syntax_string()
         package_string = self.package_string()
@@ -401,9 +404,26 @@ class Protobuf():
             for comment in comments:
                 if comment.position == Position.TOP:
                     text_lines = [l.strip() for l in comment.text.split('\n')]
+
+                    new_text_lines = []
+                    if self.comment_max_length is not None:
+                        for l in text_lines:
+                            new_text_lines.extend(to_lines(l, self.comment_max_length))
+                    text_lines = new_text_lines
+
                     top_comment_lines.extend(text_lines)
                 if comment.position == Position.Right:
+                    line = comment.text
+                    text_lines = [line]
+
+                    new_text_lines = []
+                    if self.comment_max_length is not None:
+                        for l in text_lines:
+                            new_text_lines.extend(to_lines(l, self.comment_max_length))
+                    text_lines = new_text_lines
+
                     top_comment_lines.append(comment.text)
+
                     right_comment = ''
         else:
             for comment in comments:
