@@ -1,134 +1,134 @@
 /*
-The price sdfgfhg API request message //asd /*asdfghj*/ AS
+**    The price sdfgfhg API request message //asd /*asdfghj*/ AS
 */
 syntax = "proto3";
 
 /*
-The price availabil
+**    The price availabil
 */
 package yxchfz.dalao.api;
 
 /*
-Chronological work  legs
+**    Chronological work  legs
 */
 option java_package = "net.yxchfz.schema.api";
 /*
-Chronological work  legs
+**    Chronological work  legs
 */
 option java_outer_classname = "Demo Proto";
 /*
-Chronological work  legss
+**    Chronological work  legss
 */
 option java_multiple_files = true;
 
 /*
-currency must be the same as
+**    currency must be the same as
 */
 import "yixiaocuohuaifenzi/democontract/common/client.proto";
 /*
-Chronological work  legs
+**    Chronological work  legs
 */
 import "yixiaocuohuaifenzi/democontract/common/pass.proto";
 /*
-asdfgh
+**    asdfgh
 */
 import "yixiaocuohuaifenzi/democontract/common/dasdasd.proto";
 /*
-sdsads
+**    sdsads
 */
 import "yixiaocuohuaifenzi/democontract/common/ewegrhf.proto";
 
 message DemoRequestA {
     /*
-    Basic request context data
+    **    Basic request context data
     */
     common.RequestContext request_context        = 1;
     /*
-    Worker groups
+    **    Worker groups
     */
     repeated common.WorkerGroup passenger_groups = 2;
     /*
-    Chronological work  legs
+    **    Chronological work  legs
     */
     repeated common.Tiger work_legs              = 3;
     /*
-    Use to validate the work  price, the currency must be the same as
+    **    Use to validate the work  price, the currency must be the same as
     */
     common.Money quote_price                     = 4;
 }
 
 message DemoRequestB {
     /*
-    Basic request context data
+    **    Basic request context data
     */
     common.RequestContext request_context        = 1;
     /*
-    Worker groups
+    **    Worker groups
     */
     repeated common.WorkerGroup passenger_groups = 2;
     /*
-    Chronological work  legs
+    **    Chronological work  legs
     */
     repeated common.Tiger work_legs              = 3;
     /*
-    Use to validate the work  price, the currency must be the same as
+    **    Use to validate the work  price, the currency must be the same as
     */
     common.Money quote_price                     = 4;
     /*
-    map field comment d
+    **    map field comment d
     */
     map<string, Project> projects                = 3;
     /*
-    Use to validate the work  price
+    **    Use to validate the work  price
     */
     common.Money quote_pasdasrice                = 5;
 }
 
 enum BaggageType {
     /*
-    BAGGAGE_TYPE_UNSPECIFIED
+    **    BAGGAGE_TYPE_UNSPECIFIED
     */
     BAGGAGE_TYPE_UNSPECIFIED = 0;
     /*
-    BAGGAGE_TYPE_CARRY_ON
+    **    BAGGAGE_TYPE_CARRY_ON
     */
     BAGGAGE_TYPE_CARRY_ON    = 1;
     /*
-    BAGGAGE_TYPE_CHECKED
+    **    BAGGAGE_TYPE_CHECKED
     */
     BAGGAGE_TYPE_CHECKED     = 2;
 }
 
 message DemoRequestC {
     /*
-    Basic request context data
+    **    Basic request context data
     */
     common.RequestContext request_context        = 1;
     /*
-    Worker groups
+    **    Worker groups
     */
     repeated common.WorkerGroup passenger_groups = 2;
     /*
-    Chronological work  legs
+    **    Chronological work  legs
     */
     repeated common.Tiger work_legs              = 3;
     /*
-    Use to validate the work  price, the currency must be the same as
+    **    Use to validate the work  price, the currency must be the same as
     */
     common.Money quote_price                     = 4;
     /*
-    Use to validate the work  price
+    **    Use to validate the work  price
     */
     common.Money quote_pasdasrice                = 4;
 }
 
 service Demo {
     /*
-    sadfdDemo
+    **    sadfdDemo
     */
     rpc DemoA (DemoRequest) returns (DemoResponse);
     /*
-    Demo
+    **    Demo
     */
     rpc DemoB (DemoRequest) returns (DemoResponse);
 }
