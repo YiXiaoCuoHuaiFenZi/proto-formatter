@@ -18,6 +18,7 @@ class Protobuf():
     SPACES_BETWEEN_VALUE_COMMENT = 2
     SPACES_BEFORE_AFTER_EQUAL_SIGN = 1
     ONE_SPACE = ' '
+    TOP_COMMENT_INDENTS = ' ' * 4
 
     def __init__(self):
         self.syntax = None
@@ -443,11 +444,14 @@ class Protobuf():
                 if comment.position == Position.Right:
                     right_comment = comment.text
 
+        indented_top_comment_lines = []
         if top_comment_lines:
-            top_comment_lines.insert(0, '/*')
-            top_comment_lines.append('*/')
+            for comment_line in top_comment_lines:
+                indented_top_comment_lines.append(f'**{self.TOP_COMMENT_INDENTS}{comment_line}')
+            indented_top_comment_lines.insert(0, '/*')
+            indented_top_comment_lines.append('*/')
 
-        lines = top_comment_lines
+        lines = indented_top_comment_lines
         if right_comment:
             line = f'{value_line}{self.ONE_SPACE * space_between_number_comment}// {right_comment}'
             lines.append(line)
