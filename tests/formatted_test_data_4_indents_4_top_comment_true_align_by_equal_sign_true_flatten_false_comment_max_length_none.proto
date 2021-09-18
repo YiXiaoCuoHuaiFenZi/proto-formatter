@@ -1,4 +1,57 @@
 /*
+**    asdddddddd
+**    price demo  API request message
+**    sdfghjk
+**    The price sdfgfhg API request message //asd /*asdfghj*/ AS
+*/
+syntax = "proto3";
+
+/*
+**    asdddddddd
+**    sdfghjk
+**    The price availabil
+*/
+package yxchfz.dalao.api;
+
+/*
+**    The price demo  API request message
+**    aaaaaaaaaaaaaa
+**    asdasdasd
+**    The price demo  API request messageadssd
+**    asdasdasd asdsad
+**    y API request messageadssd
+**    Chronological work  legs
+*/
+option java_package = "net.yxchfz.schema.api";
+/*
+**    Chronological work  legs
+*/
+option java_outer_classname = "Demo Proto";
+/*
+**    Chronological work  legss
+*/
+option java_multiple_files = true;
+
+/*
+**    currency must be the same as
+*/
+import "yixiaocuohuaifenzi/democontract/common/client.proto";
+/*
+**    Chronological work  legs
+*/
+import "yixiaocuohuaifenzi/democontract/common/pass.proto";
+/*
+**    asdfgh
+*/
+import "yixiaocuohuaifenzi/democontract/common/dasdasd.proto";
+/*
+**    sdsads
+*/
+import "yixiaocuohuaifenzi/democontract/common/ewegrhf.proto";
+
+/*
+**    The fasdghjk adsfgh
+**    Chronological work  legs
 **    Level 0
 **    Level 0
 */
@@ -25,6 +78,9 @@ message Outer {
         */
         bool booly_aa                     = 1;
     }
+    /*
+    **    BaggageType
+    */
     enum BaggageTypeA {
         /*
         **    BAGGAGE_TYPE_UNSPECIFIED
@@ -35,15 +91,18 @@ message Outer {
         */
         BAGGAGE_TYPE_CARRY_ON             = 1;
         /*
+        **    asdfgh
         **    BAGGAGE_TYPE_CHECKED
         */
         BAGGAGE_TYPE_CHECKED              = 2;
     }
     /*
+    **    If an existing message type no longer meets all your needs – for example, you'd like the message format to have an extra field – but you'd still like to use code created with the old format, don't worry! It's very simple to update message types without breaking any of your existing code. Just remember the following rules:
     **    Level 1
     */
     message MiddleBB {
         /*
+        **    Don't change the field numbers for any existing fields.
         **    Level 2
         */
         message Inner {
@@ -54,11 +113,14 @@ message Outer {
             /*
             **    dewq urrency must be the same as
             */
-            bool booly                    = 2;
+            bool booly                    = 23333333333333333333333;
             /*
             **    map
             */
             map<string, Project> projects = 3;
+            /*
+            **    test_oneof
+            */
             oneof test_oneof {
                 string name               = 4;
                 SubMessage sub_message    = 9;
@@ -75,6 +137,9 @@ message Outer2 {
     **    ival ivalivalivalivalivalivalival
     */
     int64 ival                   = 1;
+    /*
+    **    BaggageType
+    */
     enum BaggageTypeB {
         /*
         **    BAGGAGE_TYPE_UNSPECIFIED
@@ -85,6 +150,7 @@ message Outer2 {
         */
         BAGGAGE_TYPE_CARRY_ON    = 1;
         /*
+        **    asdfgh
         **    BAGGAGE_TYPE_CHECKED
         */
         BAGGAGE_TYPE_CHECKED     = 2;
@@ -95,8 +161,12 @@ message Outer2 {
     bool booly                   = 2;
 }
 
+/*
+**    The price Demo  rpc service
+*/
 service Demo {
     /*
+    **    asdfgf
     **    sadfdDemo
     */
     rpc DemoA (DemoRequest) returns (DemoResponse);

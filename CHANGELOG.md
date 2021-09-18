@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.7] - 2021-09-17
+### Add
+- Add console scripts feature.
+
 ## [0.1.6] - 2021-09-08
 ### Changed
 - Change the top comments style

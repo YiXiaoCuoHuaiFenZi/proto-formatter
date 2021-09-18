@@ -29,7 +29,7 @@ def write_file(file_path, content):
 
 
 def create_test_case_name(config):
-    return f'indents_{config["indents"]}_all_top_comments_{config["all_top_comments"]}_equal_sign_{config["equal_sign"]}_flatten_{config["flatten"]}_comment_max_length_{config["comment_max_length"]}'.lower()
+    return f'indents_{config["indents"]}_top_comment_{config["top_comment"]}_align_by_equal_sign_{config["align_by_equal_sign"]}_flatten_{config["flatten"]}_comment_max_length_{config["comment_max_length"]}'.lower()
 
 
 def create_formatted_file_name(test_file, config):
@@ -42,57 +42,57 @@ def make_test_data():
     configs = [
         {
             'indents': 2,
-            'all_top_comments': False,
-            'equal_sign': False,
+            'top_comment': False,
+            'align_by_equal_sign': False,
             'flatten': False,
             'comment_max_length': None
         },
         {
             'indents': 2,
-            'all_top_comments': False,
-            'equal_sign': True,
+            'top_comment': False,
+            'align_by_equal_sign': True,
             'flatten': True,
             'comment_max_length': None
         },
         {
             'indents': 4,
-            'all_top_comments': False,
-            'equal_sign': True,
+            'top_comment': False,
+            'align_by_equal_sign': True,
             'flatten': False,
             'comment_max_length': None
         },
         {
             'indents': 4,
-            'all_top_comments': True,
-            'equal_sign': False,
+            'top_comment': True,
+            'align_by_equal_sign': False,
             'flatten': False,
             'comment_max_length': None
         },
         {
             'indents': 4,
-            'all_top_comments': True,
-            'equal_sign': True,
+            'top_comment': True,
+            'align_by_equal_sign': True,
             'flatten': False,
             'comment_max_length': None
         },
         {
             'indents': 4,
-            'all_top_comments': True,
-            'equal_sign': True,
+            'top_comment': True,
+            'align_by_equal_sign': True,
             'flatten': True,
             'comment_max_length': None
         },
         {
             'indents': 4,
-            'all_top_comments': True,
-            'equal_sign': True,
+            'top_comment': True,
+            'align_by_equal_sign': True,
             'flatten': True,
             'comment_max_length': 50
         },
         {
             'indents': 4,
-            'all_top_comments': False,
-            'equal_sign': True,
+            'top_comment': False,
+            'align_by_equal_sign': True,
             'flatten': True,
             'comment_max_length': 50
         }
@@ -105,8 +105,8 @@ def make_test_data():
             format_file(
                 fp=test_file,
                 indents=config['indents'],
-                all_top_comments=config['all_top_comments'],
-                equal_sign=config['equal_sign'],
+                top_comment=config['top_comment'],
+                align_by_equal_sign=config['align_by_equal_sign'],
                 flatten=config['flatten'],
                 comment_max_length=config['comment_max_length'],
                 new_fp=formatted_file_name
@@ -138,7 +138,7 @@ from helper import read_proto, read_file, test_path
 
     original_file_path = os.path.join(test_path, '{}')
     proto_str = read_file(original_file_path)
-    actual_text = format_str(proto_str, indents={}, all_top_comments={}, equal_sign={}, flatten={}, comment_max_length={})
+    actual_text = format_str(proto_str, indents={}, top_comment={}, align_by_equal_sign={}, flatten={}, comment_max_length={})
 
     assert expected_text == actual_text"""
 
@@ -149,8 +149,8 @@ from helper import read_proto, read_file, test_path
             config['formatted_file'],
             config['original_file'],
             config['indents'],
-            config['all_top_comments'],
-            config['equal_sign'],
+            config['top_comment'],
+            config['align_by_equal_sign'],
             config['flatten'],
             config['comment_max_length']
         )

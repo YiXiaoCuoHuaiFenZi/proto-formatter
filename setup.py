@@ -4,7 +4,6 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 install_requires = [
-    'anytree==2.8.0',
 ]
 
 dev_requires = [
@@ -16,7 +15,7 @@ dev_requires = [
 
 setuptools.setup(
     name="proto-formatter",
-    version="0.1.6",
+    version="0.1.7",
     author="YiXiaoCuoHuaiFenZi(一小撮坏分子)",
     author_email="249664317@qq.com",
     description="Protocol Buffers file formatter.",
@@ -39,5 +38,8 @@ setuptools.setup(
     tests_require=[],
     extras_require={
         "dev": dev_requires
+    },
+    entry_points={
+        'console_scripts': ['proto_formatter=proto_formatter.main:main'],
     },
 )
