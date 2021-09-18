@@ -11,14 +11,12 @@ def remove_suffix(text, suffix):
 
 
 def is_word(line, target_index):
-    if target_index + 1 > len(line):
-        i = 0
     return line[target_index + 1].lower() not in ' \n' or line[target_index - 1].lower() not in ' \n'
 
 
 def find_word_start_index(line, target_index):
     index = target_index - 1
-    while (True):
+    while (index >= 0):
         if line[index].lower() in ' \n':
             return index
         index = index - 1
