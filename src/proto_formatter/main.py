@@ -186,8 +186,8 @@ def main():
             format_file(
                 fp,
                 indents=args.indents,
-                all_top_comments=args.top_comment,
-                equal_sign=args.align_by_equal_sign,
+                top_comment=args.top_comment,
+                align_by_equal_sign=args.align_by_equal_sign,
                 flatten=args.flatten,
                 comment_max_length=args.comment_max_length,
                 new_fp=None
