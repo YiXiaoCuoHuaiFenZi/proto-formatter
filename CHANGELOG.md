@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.8] - 2021-09-18
+### Fix
+- fix index out of range bug.
+
 ## [0.1.7] - 2021-09-17
 ### Add
 - Add console scripts feature.

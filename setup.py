@@ -15,7 +15,7 @@ dev_requires = [
 
 setuptools.setup(
     name="proto-formatter",
-    version="0.1.7",
+    version="0.1.8",
     author="YiXiaoCuoHuaiFenZi(一小撮坏分子)",
     author_email="249664317@qq.com",
     description="Protocol Buffers file formatter.",

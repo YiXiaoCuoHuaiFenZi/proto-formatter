@@ -182,7 +182,7 @@ def main():
 
         proto_files = list(set(proto_files))  # remove duplicates
         for fp in proto_files:
-            print(f"format {fp.replace(root_path, '')}")
+            print(f"formatting {fp.replace(root_path, '')}")
             format_file(
                 fp,
                 indents=args.indents,

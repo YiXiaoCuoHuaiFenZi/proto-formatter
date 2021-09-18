@@ -54,7 +54,7 @@ comment of id a
        optional string email = 3;// comment of email
 }
 """
-formatted_proto_str = format_str(proto_str, equal_sign=True)
+formatted_proto_str = format_str(proto_str, align_by_equal_sign=True)
 print(formatted_proto_str)
 ```
 The formatted_proto_str is:
