@@ -28,18 +28,18 @@ class Protobuf():
         self.objects = []
 
         self.indents_unit = 2
-        self.equal_sign = None
-        self.all_top_comments = False
+        self.align_by_equal_sign = None
+        self.top_comment = False
         self.flatten = False
         self.comment_max_length = None
 
-    def to_string(self, indents=2, equal_sign=None, all_top_comments=False, flatten=False, comment_max_length=None):
+    def to_string(self, indents=2, align_by_equal_sign=None, top_comment=False, flatten=False, comment_max_length=None):
         if flatten:
             self.flatten_objects()
 
         self.indents_unit = indents
-        self.equal_sign = equal_sign
-        self.all_top_comments = all_top_comments
+        self.align_by_equal_sign = align_by_equal_sign
+        self.top_comment = top_comment
         self.flatten = flatten
         self.comment_max_length = comment_max_length
 
@@ -283,7 +283,7 @@ class Protobuf():
                     self.SPACES_BETWEEN_VALUE_COMMENT
                 )
 
-                if self.equal_sign:
+                if self.align_by_equal_sign:
                     line_without_number = line.split('=')[0].rstrip()
                     space_between_name_equal_sign = max_equa_sign_index - len(line_without_number)
 
@@ -398,10 +398,9 @@ class Protobuf():
             return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
     def make_string(self, value_line, indents, comments, space_between_number_comment):
-        lines = []
         top_comment_lines = []
         right_comment = ''
-        if self.all_top_comments:
+        if self.top_comment:
             for comment in comments:
                 if comment.position == Position.TOP:
                     text_lines = [l.strip() for l in comment.text.split('\n')]
@@ -410,7 +409,7 @@ class Protobuf():
                     if self.comment_max_length is not None:
                         for l in text_lines:
                             new_text_lines.extend(to_lines(l, self.comment_max_length))
-                    text_lines = new_text_lines
+                        text_lines = new_text_lines
 
                     top_comment_lines.extend(text_lines)
                 if comment.position == Position.Right:
@@ -421,7 +420,6 @@ class Protobuf():
                     if self.comment_max_length is not None:
                         for l in text_lines:
                             new_text_lines.extend(to_lines(l, self.comment_max_length))
-                    new_text_lines
 
                     if self.comment_max_length is not None:
                         top_comment_lines.extend(new_text_lines)
@@ -438,7 +436,7 @@ class Protobuf():
                     if self.comment_max_length is not None:
                         for l in text_lines:
                             new_text_lines.extend(to_lines(l, self.comment_max_length))
-                    text_lines = new_text_lines
+                        text_lines = new_text_lines
 
                     top_comment_lines.extend(text_lines)
                 if comment.position == Position.Right:

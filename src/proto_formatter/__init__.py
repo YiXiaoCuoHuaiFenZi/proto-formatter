@@ -1,15 +1,15 @@
 from proto_formatter.parser import ProtoParser
 
 
-def format_file(fp, indents=2, all_top_comments=False, equal_sign=False, flatten=False, comment_max_length=None,
+def format_file(fp, indents=2, top_comment=False, align_by_equal_sign=False, flatten=False, comment_max_length=None,
                 new_fp=None):
     """
     Format protobuf file, override the original file if no new file path(new_fp) specified
     or write the formatted result to a new file.
     :param fp: unformatted protobuf file path.
     :param indents: indents number.
-    :param all_top_comments: convert the single line comment at the left of code as a top comment or not. Default: not
-    :param equal_sign: if align the code by equal sign or not.
+    :param top_comment: convert the single line comment at the left of code as a top comment or not. Default: not
+    :param align_by_equal_sign: if align the code by equal sign or not.
     Example of align:
         ENUM_TYPE_UNSPECIFIED = 0;  // ENUM_TYPE_UNSPECIFIED
         ENUM_TYPE_CARRY_A     = 1;  // ENUM_TYPE_CARRY_A
@@ -49,8 +49,8 @@ def format_file(fp, indents=2, all_top_comments=False, equal_sign=False, flatten
     protobuf_obj = parser.load(fp=fp)
     content = protobuf_obj.to_string(
         indents=indents,
-        all_top_comments=all_top_comments,
-        equal_sign=equal_sign,
+        top_comment=top_comment,
+        align_by_equal_sign=align_by_equal_sign,
         flatten=flatten,
         comment_max_length=comment_max_length
     )
@@ -62,13 +62,13 @@ def format_file(fp, indents=2, all_top_comments=False, equal_sign=False, flatten
         return f.write(content)
 
 
-def format_str(proto_str, indents=2, all_top_comments=False, equal_sign=False, flatten=False, comment_max_length=None):
+def format_str(proto_str, indents=2, top_comment=False, align_by_equal_sign=False, flatten=False, comment_max_length=None):
     """
     Format a protobuf string, return the formatted string.
     :param proto_str: protobuf string need to be formatted.
     :param indents: indents number.
-    :param all_top_comments: convert the single line comment at the left of code as a top comment or not. Default: not
-    :param equal_sign: if align the code by equal sign or not.
+    :param top_comment: convert the single line comment at the left of code as a top comment or not. Default: not
+    :param align_by_equal_sign: if align the code by equal sign or not.
     Example of align:
         ENUM_TYPE_UNSPECIFIED = 0;  // ENUM_TYPE_UNSPECIFIED
         ENUM_TYPE_CARRY_A     = 1;  // ENUM_TYPE_CARRY_A
@@ -107,8 +107,8 @@ def format_str(proto_str, indents=2, all_top_comments=False, equal_sign=False, f
     protobuf_obj = parser.loads(proto_str=proto_str.strip())
     content = protobuf_obj.to_string(
         indents=indents,
-        all_top_comments=all_top_comments,
-        equal_sign=equal_sign,
+        top_comment=top_comment,
+        align_by_equal_sign=align_by_equal_sign,
         flatten=flatten,
         comment_max_length=comment_max_length
     )

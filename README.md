@@ -6,37 +6,36 @@ Protocol Buffers file formatter.
 pip install proto-formatter
 ```
 ## Usage
-- Format protobuf file using default config:
-  - indents=2 
-  - all_top_comments=False
-  - equal_sign=False
-  - flatten=False
-  - comment_max_length=None
-  - new_fp=None
-
-Original protobuf file `test.proto` will be rewritten with formatted content.
-```python
-from proto_formatter import format_file
-
-format_file('test.proto')
+Format all proto files under current folder and sub-folders with default configs
+```shell
+proto_formatter format
 ```
-- Format protobuf file with specified config:
-  - indents=4 
-  - all_top_comments=True
-  - equal_sign=True
-  - flatten=False
-  - comment_max_length=None
-  - new_fp='formatted.proto'
+Help message
+```shell
+*****************************************************
+*  Format protobuf file(s) from a specific target.  *
+*****************************************************
 
-Original protobuf file `test.proto` not be rewritten, create new protobuf file `formatted.proto` instead.
-```python
-from proto_formatter import format_file
+usage:
+  proto_formatter <command> [options]
 
-format_file('test.proto', indents=4, all_top_comments=True, equal_sign=True, flatten=False, comment_max_length=None, new_fp='formatted.proto')
+commands:
+  format                   format protobuf files
+  view                     view file
+
+general options:
+  -h                       show this help message and exit
+  --help                   show this help message and exit
+  --files                  target protobuf files need to be formatted.
+  --folder                 target folder or path, default is current folder, all protubuf files under it and its' subdirectories will be formatted.
+  --indents                the number of indented spaces
+  --top-comment            format all comments as top comments(above the target line)
+  --align-by-equal-sign    align the code by equal sign
+  --flatten                flatten nested objects
+  --comment-max-length     the max length of comment line, defalut is 999999.
+  --file                   target protobuf file, only used for command 'view'
 ```
-- Format protobuf string align with equal sign: 
-  - equal_sign=True
-  - other configs are default values.
+It also provides a method ``format_str`` to format a protobuf string.
 ```python
 from proto_formatter import format_str
 
@@ -56,6 +55,7 @@ comment of id a
 }
 """
 formatted_proto_str = format_str(proto_str, equal_sign=True)
+print(formatted_proto_str)
 ```
 The formatted_proto_str is:
 ```protobuf
@@ -63,17 +63,15 @@ The formatted_proto_str is:
 **    Person balabala
 */
 message Person {
-    /*
-    **    comment of name a
-    */
-    required string name  = 1;  // comment of name b
-    /*
-    **    comment of id a
-    **    comment of id b
-    */
-    required int32 id     = 2;  // comment of id c
-    optional string email = 3;  // comment of email
+  /*
+  **    comment of name a
+  */
+  required string name  = 1;  // comment of name b
+  /*
+  **    comment of id a
+  **    comment of id b
+  */
+  required int32 id     = 2;  // comment of id c
+  optional string email = 3;  // comment of email
 }
-
-
 ```
