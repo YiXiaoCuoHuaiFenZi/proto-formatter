@@ -116,7 +116,7 @@ class Detector(Constant):
                 return False
 
         if line.count(self.MULTIPLE_COMENT_START_SYMBOL) > 0:
-            if ine.index(self.SEMICOLON) > ine.index(self.MULTIPLE_COMENT_START_SYMBOL):
+            if line.index(self.SEMICOLON) > line.index(self.MULTIPLE_COMENT_START_SYMBOL):
                 return False
 
         if self._is_service_element_line(line):

@@ -19,7 +19,7 @@ package yxchfz.dalao.api;
 **    aaaaaaaaaaaaaa
 **    asdasdasd
 **    The price demo  API request messageadssd
-**    asdasdasd asdsad
+**    asdasdasd //asdsad
 **    y API request messageadssd
 **    Chronological work  legs
 */
@@ -53,8 +53,6 @@ import "yixiaocuohuaifenzi/democontract/common/ewegrhf.proto";
 /*
 **    The fasdghjk adsfgh
 **    Chronological work  legs
-**    
-**    
 **    safdf
 **    Chronological work  legs
 */
@@ -86,7 +84,6 @@ message DemoRequestA {
 **    The fasdghjk adsfgh
 **    Chronological work  legs
 **    asdfg
-**    
 **    safdf
 **    Chronological work  legss
 */
