@@ -43,7 +43,7 @@ class Option():
 
 
 class MessageElement():
-    def __init__(self, type, name, number, rules='', label=None, comments=[]):
+    def __init__(self, type, name, number, rules='', label='', comments=[]):
         self.label = label
         self.type = type
         self.name = name
@@ -60,7 +60,7 @@ class Message():
 
 
 class OneofElement():
-    def __init__(self, type, name, number, rules='', label=None, comments=[]):
+    def __init__(self, type, name, number, rules='', label='', comments=[]):
         self.label = label
         self.type = type
         self.name = name

@@ -38,7 +38,8 @@ def create_formatted_file_name(test_file, config):
 
 
 def make_test_data():
-    test_files = ['test_data_1.proto', 'test_data_2.proto', 'test_data_3.proto', 'test_data_4.proto']
+    test_files = ['test_data_1.proto', 'test_data_2.proto', 'test_data_3.proto', 'test_data_4.proto',
+                  'test_data_5.proto']
     configs = [
         {
             'indents': 2,

@@ -3,12 +3,10 @@ from .proto_structures import Import
 from .proto_structures import Message
 from .proto_structures import MessageElement
 from .proto_structures import Option
-from .proto_structures import Package
 from .proto_structures import Position
 from .proto_structures import ProtoEnum
 from .proto_structures import Service
 from .proto_structures import ServiceElement
-from .proto_structures import Syntax
 from .proto_structures import Oneof
 from .util import to_lines
 from copy import deepcopy
@@ -289,7 +287,8 @@ class Protobuf():
 
                     if hasattr(element, 'number'):
                         space_between_number_comment = max_length - max_equa_sign_index - len('=') - len(';') - len(
-                            element.number) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
+                            element.number) - len(
+                            element.rules) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
                     elif line.strip().startswith('rpc'):
                         space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
                     else:
@@ -354,10 +353,9 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        if obj.label:
-            line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
-        else:
-            line = f'{obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
+        line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number} {obj.rules}'
+        line = line.strip()  # remove prefix space when obj.label is empty string or rules is empty.
+        line = f'{line};'
 
         if no_comment:
             return self.make_indented_line(line, indents)
@@ -373,7 +371,9 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
+        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number} {obj.rules}'
+        line = line.strip()  # remove prefix space when rules is empty.
+        line = f'{line};'
 
         if no_comment:
             return self.make_indented_line(line, indents=indents)

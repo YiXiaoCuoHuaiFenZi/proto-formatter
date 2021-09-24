@@ -151,7 +151,7 @@ class ObjectParser(Constant):
 
         comments = CommentParser.create_comment(line, top_comments)
         if len(parts) == 2:
-            return MessageElement(label=None, type=parts[0], name=parts[1], number=data.number, rules=data.rules,
+            return MessageElement(type=parts[0], name=parts[1], number=data.number, rules=data.rules,
                                   comments=comments)
         if len(parts) == 3:
             return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=data.number, rules=data.rules,
@@ -175,7 +175,7 @@ class ObjectParser(Constant):
         number = number.strip()
         comments = CommentParser.create_comment(line, top_comments)
 
-        return MessageElement(label=None, type=type, name=name, number=number, comments=comments)
+        return MessageElement(type=type, name=name, number=number, comments=comments)
 
     @classmethod
     def parse_service_element(cls, line, top_comments=[]):
@@ -194,7 +194,7 @@ class ObjectParser(Constant):
     @classmethod
     def get_number_and_rules(self, value):
         number = value
-        rules = None
+        rules = ''
         if self.LEFT_SQUARE_BRACKET in value:
             left_brace_stack_index = value.index(self.LEFT_SQUARE_BRACKET)
             right_brace_stack_index = value.rindex(self.RIGHT_SQUARE_BRACKET)

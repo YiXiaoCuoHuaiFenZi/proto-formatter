@@ -1,0 +1,123 @@
+/*
+**    asdddddddd
+**    price demo  API request message
+**    sdfghjk
+*/
+syntax = "proto3";  // The price sdfgfhg API request message //asd /*asdfghj*/ AS
+
+/*
+**    asdddddddd
+**    sdfghjk
+*/
+package yxchfz.dalao.api;  // The price availabil
+
+/*
+**    The price demo  API request message
+**    aaaaaaaaaaaaaa
+**    asdasdasd
+**    The price demo  API request messageadssd
+**    asdasdasd asdsad
+**    y API request messageadssd
+*/
+option java_package = "net.yxchfz.schema.api";  // Chronological work  legs
+option java_outer_classname = "Demo Proto";     // Chronological work  legs
+option java_multiple_files = true;              // Chronological work  legss
+
+import "yixiaocuohuaifenzi/democontract/common/client.proto";   // currency must be the same as
+import "yixiaocuohuaifenzi/democontract/common/pass.proto";     // Chronological work  legs
+import "yixiaocuohuaifenzi/democontract/common/dasdasd.proto";  // asdfgh
+import "yixiaocuohuaifenzi/democontract/common/ewegrhf.proto";  // sdsads
+
+/*
+**    The fasdghjk adsfgh
+**    Chronological work  legs
+**    
+**    
+**    safdf
+**    Chronological work  legs
+*/
+message DemoRequestA {
+  /*
+  **    x must be set to "foo"
+  */
+  string x                                     = 0 [(validate.rules).string.const = foo];
+  /*
+  **    asdfghjkytrewqrty
+  **    adasdasd
+  */
+  common.RequestContext request_context        = 1 [(validate.rules).message.skip = true];                        // Basic request context data
+  /*
+  **    asdfghjkytrewqrty
+  */
+  repeated common.WorkerGroup passenger_groups = 2 [(validate.rules).repeated.min_items = 3];                     // Worker groups
+  /*
+  **    adasdasd
+  */
+  repeated common.Tiger work_legs              = 3 [(validate.rules).repeated = {min_items: 5, max_items: 10}];   // Chronological work  legs
+  common.Money quote_price                     = 4 [(validate.rules).message.skip = true];                        // Use to validate the work  price, the currency must be the same as
+}
+
+/*
+**    The fasdghjk adsfgh
+**    Chronological work  legs
+**    asdfg
+**    
+**    safdf
+**    Chronological work  legss
+*/
+message DemoRequestB {
+  /*
+  **    asdfghjkytrewqrty
+  */
+  common.RequestContext request_context        = 1 [(validate.rules).message.skip = true];                           // Basic request context data
+  /*
+  **    asdfghjkytrewqrty
+  */
+  repeated common.WorkerGroup passenger_groups = 2;                                                                 // Worker groups
+  /*
+  **    adasdasd
+  */
+  repeated common.Tiger work_legs              = 3;                                                                 // Chronological work  legs
+  common.Money quote_price                     = 4 [(validate.rules).message.skip = true];                           // Use to validate the work  price, the currency must be the same as
+  /*
+  **    map field comment a
+  **    map field comment b
+  **    map field comment c
+  */
+  map<string, Project> projects                = 3        [(validate.rules)].map = {min_pairs: 5, max_pairs: 10}];  // map field comment d
+  common.Money quote_pasdasrice                = 5;                                                                 // Use to validate the work  price
+}
+
+/*
+**    BaggageType
+*/
+enum BaggageType {
+  BAGGAGE_TYPE_UNSPECIFIED = 0 [(validate.rules).enum.const = 2];             // BAGGAGE_TYPE_UNSPECIFIED
+  BAGGAGE_TYPE_CARRY_ON    = 1 [(validate.rules).enum.defined_only = true];   // BAGGAGE_TYPE_CARRY_ON
+  /*
+  **    asdfgh
+  */
+  BAGGAGE_TYPE_CHECKED     = 2 [(validate.rules).enum = {not_in: [1]}];       // BAGGAGE_TYPE_CHECKED
+}
+
+message DemoRequestC {
+  common.RequestContext request_context        = 1;                                         // Basic request context data
+  repeated common.WorkerGroup passenger_groups = 2;                                         // Worker groups
+  /*
+  **    adasdasd
+  */
+  repeated common.Tiger work_legs              = 3;                                         // Chronological work  legs
+  common.Money quote_price                     = 4 [(validate.rules).any.required = true];   // Use to validate the work  price, the currency must be the same as
+  common.Money quote_pasdasrice                = 5 [(validate.rules).any.required = true];   // Use to validate the work  price
+}
+
+/*
+**    The price Demo  rpc service
+*/
+service Demo {
+  /*
+  **    asdfgf
+  */
+  rpc DemoA (DemoRequest) returns (DemoResponse);  // sadfdDemo
+  rpc DemoB (DemoRequest) returns (DemoResponse);  // Demo
+}
