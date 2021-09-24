@@ -1,6 +1,6 @@
-from proto_formatter.comment import CommentParser
-from proto_formatter.proto_structures import Package
-from proto_formatter.protobuf import Protobuf
+from .comment import CommentParser
+from .proto_structures import Package
+from .protobuf import Protobuf
 
 
 class PackageParser():

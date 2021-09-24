@@ -3,7 +3,7 @@ import sys
 import types
 import argparse
 from proto_formatter import format_file
-from proto_formatter.util import read_file
+from .util import read_file
 
 
 def _get_proto_files(root_path):

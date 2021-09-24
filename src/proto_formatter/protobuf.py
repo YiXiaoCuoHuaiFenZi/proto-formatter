@@ -1,16 +1,16 @@
-from proto_formatter.proto_structures import EnumElement
-from proto_formatter.proto_structures import Import
-from proto_formatter.proto_structures import Message
-from proto_formatter.proto_structures import MessageElement
-from proto_formatter.proto_structures import Option
-from proto_formatter.proto_structures import Package
-from proto_formatter.proto_structures import Position
-from proto_formatter.proto_structures import ProtoEnum
-from proto_formatter.proto_structures import Service
-from proto_formatter.proto_structures import ServiceElement
-from proto_formatter.proto_structures import Syntax
-from proto_formatter.proto_structures import Oneof
-from proto_formatter.util import to_lines
+from .proto_structures import EnumElement
+from .proto_structures import Import
+from .proto_structures import Message
+from .proto_structures import MessageElement
+from .proto_structures import Option
+from .proto_structures import Package
+from .proto_structures import Position
+from .proto_structures import ProtoEnum
+from .proto_structures import Service
+from .proto_structures import ServiceElement
+from .proto_structures import Syntax
+from .proto_structures import Oneof
+from .util import to_lines
 from copy import deepcopy
 
 
@@ -51,7 +51,7 @@ class Protobuf():
         all_lines = []
         for object in self.objects:
             lines = []
-            self.format_object_witout_comment(object, lines, indents=0)
+            self.format_object_without_comment(object, lines, indents=0)
             max_length = self.get_max_length(lines)
             extra = self.get_max_lengthes(lines)
             new_lines = []
@@ -322,7 +322,7 @@ class Protobuf():
         message_rear = self.make_string('}', indents, [], self.SPACES_BETWEEN_VALUE_COMMENT)
         string_list.append(message_rear)
 
-    def format_object_witout_comment(self, obj, string_list, indents):
+    def format_object_without_comment(self, obj, string_list, indents):
         message_header = self.create_object_header(obj, no_comment=True, indents=indents, max_length=None)
         string_list.append(message_header)
         element_class = self.get_object_element_class(obj)
@@ -340,7 +340,7 @@ class Protobuf():
                 )
                 string_list.append(string)
             else:
-                self.format_object_witout_comment(element, string_list, indents=indents + self.indents_unit)
+                self.format_object_without_comment(element, string_list, indents=indents + self.indents_unit)
 
         message_rear = self.make_indented_line('}', indents=indents)
         string_list.append(message_rear)

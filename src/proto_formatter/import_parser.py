@@ -1,7 +1,7 @@
-from proto_formatter.comment import CommentParser
-from proto_formatter.constant import Constant
-from proto_formatter.proto_structures import Import
-from proto_formatter.protobuf import Protobuf
+from .comment import CommentParser
+from .constant import Constant
+from .proto_structures import Import
+from .protobuf import Protobuf
 
 
 class ImportParser(Constant):

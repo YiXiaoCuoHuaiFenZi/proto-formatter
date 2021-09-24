@@ -1,8 +1,8 @@
-from proto_formatter.proto_structures import Comment
-from proto_formatter.comment import CommentParser
-from proto_formatter.constant import Constant
-from proto_formatter.proto_structures import Position
-from proto_formatter.util import remove_prefix, remove_suffix
+from .proto_structures import Comment
+from .comment import CommentParser
+from .constant import Constant
+from .proto_structures import Position
+from .util import remove_prefix, remove_suffix
 
 
 class Detector(Constant):

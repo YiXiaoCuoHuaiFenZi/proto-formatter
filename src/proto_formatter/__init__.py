@@ -1,4 +1,4 @@
-from proto_formatter.parser import ProtoParser
+from .parser import ProtoParser
 
 
 def format_file(fp, indents=2, top_comment=False, align_by_equal_sign=False, flatten=False, comment_max_length=None,
