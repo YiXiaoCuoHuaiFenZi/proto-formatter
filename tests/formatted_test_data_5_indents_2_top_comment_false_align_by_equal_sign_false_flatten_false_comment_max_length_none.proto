@@ -16,7 +16,7 @@ package yxchfz.dalao.api;  // The price availabil
 **    aaaaaaaaaaaaaa
 **    asdasdasd
 **    The price demo  API request messageadssd
-**    asdasdasd asdsad
+**    asdasdasd //asdsad
 **    y API request messageadssd
 */
 option java_package = "net.yxchfz.schema.api";  // Chronological work  legs
@@ -31,8 +31,6 @@ import "yixiaocuohuaifenzi/democontract/common/ewegrhf.proto";  // sdsads
 /*
 **    The fasdghjk adsfgh
 **    Chronological work  legs
-**    
-**    
 **    safdf
 **    Chronological work  legs
 */
@@ -61,7 +59,6 @@ message DemoRequestA {
 **    The fasdghjk adsfgh
 **    Chronological work  legs
 **    asdfg
-**    
 **    safdf
 **    Chronological work  legss
 */

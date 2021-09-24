@@ -15,6 +15,10 @@ class CommentParser(Constant):
         comment_lines = []
         while lines:
             line = lines.pop(0).strip()
+            # comment case: /* I'am a comment */
+            if self._start_with_multiple_line_comment(line) and self._end_with_multiple_line_comment(line):
+                comment_lines.append(line)
+                continue
 
             if self._start_with_multiple_line_comment(line):
                 self.multiple_comment_start_symbol_stack.append(self.MULTIPLE_COMENT_START_SYMBOL)
@@ -39,15 +43,36 @@ class CommentParser(Constant):
         return variable != '\n'
 
     def parse(self, comment_lines):
-        text = '\n'.join(comment_lines)
-        separator = '++++++++++++++++++'
-        text = text.replace('/*', separator).replace('*/', separator)
-        text_list = text.split(separator)
-        text_list = list(filter(None, text_list))
-        text_list = list(filter(self.is_not_new_line, text_list))
-        text_list = [text.strip().replace(self.SINGLE_COMMENT_SYMBOL, '') for text in text_list]
-        multiple_line_comments = text_list
-        return multiple_line_comments
+        comment_lines = self.remove_prefix_symble(comment_lines)
+
+        comment_lines = list(filter(None, comment_lines))
+        comment_lines = list(filter(self.is_not_new_line, comment_lines))
+
+        return comment_lines
+
+    def remove_prefix_symble(self, comment_lines):
+        processed_lines = []
+        for line in comment_lines:
+            if line.strip().startswith(self.SINGLE_COMMENT_SYMBOL):
+                # remove the single comment symble if have, E.g. // I'am a comment
+                processed_lines.append(line.strip()[2:].strip())
+            elif self._start_with_multiple_line_comment(line) or self._end_with_multiple_line_comment(line):
+                # remove the multiple comment symble if have, E.g. /* I'am a comment */
+                processed_lines.append(line.strip().replace(self.MULTIPLE_COMENT_START_SYMBOL, "").replace(
+                    self.MULTIPLE_COMENT_END_SYMBOL, ''))
+            elif (line.strip().startswith(self.STAR) or line.strip().startswith(
+                    self.STAR * 2)) and not self._end_with_multiple_line_comment(line):
+                # remove the multiple comment symble if have, E.g. * I'am a comment in multiple line comment
+                # Example:
+                # /*
+                # **    Device information, including user agent, device type and ip address.
+                # */
+                #
+                processed_lines.append(line.strip().replace(self.STAR, ""))
+            else:
+                processed_lines.append(line.strip())
+
+        return processed_lines
 
     def _start_with_single_line_comment(self, line):
         return line.strip().startswith(self.SINGLE_COMMENT_SYMBOL)
