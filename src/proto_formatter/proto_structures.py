@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-# from proto_formatter.formatter import Formatter
+# from .formatter import Formatter
 
 
 class Position(Enum):
@@ -43,11 +43,12 @@ class Option():
 
 
 class MessageElement():
-    def __init__(self, type, name, number, label=None, comments=[]):
+    def __init__(self, type, name, number, rules='', label='', comments=[]):
         self.label = label
         self.type = type
         self.name = name
         self.number = number
+        self.rules = rules
         self.comments = comments
 
 
@@ -59,11 +60,12 @@ class Message():
 
 
 class OneofElement():
-    def __init__(self, type, name, number, label=None, comments=[]):
+    def __init__(self, type, name, number, rules='', label='', comments=[]):
         self.label = label
         self.type = type
         self.name = name
         self.number = number
+        self.rules = rules
         self.comments = comments
 
 
@@ -75,9 +77,10 @@ class Oneof():
 
 
 class EnumElement():
-    def __init__(self, name, number, comments=[]):
+    def __init__(self, name, number, rules='', comments=[]):
         self.name = name
         self.number = number
+        self.rules = rules
         self.comments = comments
 
 

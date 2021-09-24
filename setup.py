@@ -4,6 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 install_requires = [
+    'attrdict>=2.0.1',
 ]
 
 dev_requires = [
@@ -11,11 +12,12 @@ dev_requires = [
     'twine>=3.4.2,<4',
     'pip-tools>=5,<6',
     'pytest>=6.2.4,<6.3',
+    'attrdict>=2.0.1',
 ]
 
 setuptools.setup(
     name="proto-formatter",
-    version="0.1.8",
+    version="0.1.9",
     author="YiXiaoCuoHuaiFenZi(一小撮坏分子)",
     author_email="249664317@qq.com",
     description="Protocol Buffers file formatter.",

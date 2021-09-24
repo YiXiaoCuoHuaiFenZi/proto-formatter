@@ -1,15 +1,15 @@
 from enum import Enum
 
-from proto_formatter.constant import Constant
-from proto_formatter.comment import CommentParser
-from proto_formatter.detector import Detector
-from proto_formatter.import_parser import ImportParser
-from proto_formatter.object_parser import ObjectParser
-from proto_formatter.option_parser import OptionParser
-from proto_formatter.package_parser import PackageParser
-from proto_formatter.protobuf import Protobuf
-from proto_formatter.syntax_parser import SyntaxParser
-from proto_formatter.util import remove_prefix, remove_suffix
+from .constant import Constant
+from .comment import CommentParser
+from .detector import Detector
+from .import_parser import ImportParser
+from .object_parser import ObjectParser
+from .option_parser import OptionParser
+from .package_parser import PackageParser
+from .protobuf import Protobuf
+from .syntax_parser import SyntaxParser
+from .util import remove_prefix, remove_suffix
 
 
 class ProtoParser(Constant):

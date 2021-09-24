@@ -1,6 +1,6 @@
-from proto_formatter.comment import CommentParser
-from proto_formatter.protobuf import Protobuf
-from proto_formatter.proto_structures import Syntax
+from .comment import CommentParser
+from .protobuf import Protobuf
+from .proto_structures import Syntax
 
 
 class SyntaxParser():

@@ -1,23 +1,24 @@
 import uuid
+from attrdict import AttrDict
 from enum import Enum
-from proto_formatter.detector import Detector
-from proto_formatter.comment import CommentParser
-from proto_formatter.constant import Constant
-from proto_formatter.proto_structures import EnumElement
-from proto_formatter.proto_structures import Import
-from proto_formatter.proto_structures import Message
-from proto_formatter.proto_structures import MessageElement
-from proto_formatter.proto_structures import Option
-from proto_formatter.proto_structures import Package
-from proto_formatter.proto_structures import Position
-from proto_formatter.proto_structures import ProtoEnum
-from proto_formatter.proto_structures import Service
-from proto_formatter.proto_structures import ServiceElement
-from proto_formatter.proto_structures import Syntax
-from proto_formatter.proto_structures import Oneof
-from proto_formatter.proto_structures import OneofElement
-from proto_formatter.protobuf import Protobuf
-from proto_formatter.util import remove_prefix, remove_suffix
+from .detector import Detector
+from .comment import CommentParser
+from .constant import Constant
+from .proto_structures import EnumElement
+from .proto_structures import Import
+from .proto_structures import Message
+from .proto_structures import MessageElement
+from .proto_structures import Option
+from .proto_structures import Package
+from .proto_structures import Position
+from .proto_structures import ProtoEnum
+from .proto_structures import Service
+from .proto_structures import ServiceElement
+from .proto_structures import Syntax
+from .proto_structures import Oneof
+from .proto_structures import OneofElement
+from .protobuf import Protobuf
+from .util import remove_prefix, remove_suffix
 
 
 class ObjectParser(Constant):
@@ -125,37 +126,45 @@ class ObjectParser(Constant):
         parts = str_before_equqal_sign.split(' ')
         parts = list(filter(None, parts))
         value = line[equal_sign_index + 1:semicolon_index].strip().replace('"', "").replace("'", "")
+        data = cls.get_number_and_rules(value)
+
         comments = CommentParser.create_comment(line, top_comments)
-        return EnumElement(name=parts[0], number=value, comments=comments)
+        return EnumElement(name=parts[0], number=data.number, rules=data.rules, comments=comments)
 
     @classmethod
-    def parse_message_element(self, line, top_comments=[]):
+    def parse_message_element(cls, line, top_comments=[]):
         # common.RequestContext  request_context = 1;
         # map<string, Project> projects = 3;
+        # // x must be either "foo", "bar", or "baz"
+        # string x = 1 [(validate.rules).string = {in: ["foo", "bar", "baz"]}];
         if 'map<' in line:
-            return self.make_map_element(line, top_comments)
+            return cls.make_map_element(line, top_comments)
 
         line = line.strip()
-        equal_sign_index = line.index(self.EQUAL_SIGN)
-        semicolon_index = line.index(self.SEMICOLON)
+        equal_sign_index = line.index(cls.EQUAL_SIGN)
+        semicolon_index = line.index(cls.SEMICOLON)
         str_before_equqal_sign = line[:equal_sign_index]
         parts = str_before_equqal_sign.split(' ')
         parts = list(filter(None, parts))
         value = line[equal_sign_index + 1:semicolon_index].strip().replace('"', "").replace("'", "")
+        data = cls.get_number_and_rules(value)
+
         comments = CommentParser.create_comment(line, top_comments)
         if len(parts) == 2:
-            return MessageElement(label=None, type=parts[0], name=parts[1], number=value, comments=comments)
+            return MessageElement(type=parts[0], name=parts[1], number=data.number, rules=data.rules,
+                                  comments=comments)
         if len(parts) == 3:
-            return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=value, comments=comments)
+            return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=data.number, rules=data.rules,
+                                  comments=comments)
 
         return None
 
     @classmethod
-    def make_map_element(self, line, top_comments=[]):
+    def make_map_element(cls, line, top_comments=[]):
         # map<string, Project> projects = 3;
-        right_bracket_index = line.index(self.ANGLE_BRACKET_RIGHT)
-        equal_sign_index = line.index(self.EQUAL_SIGN)
-        semicolon_index = line.index(self.SEMICOLON)
+        right_bracket_index = line.index(cls.ANGLE_BRACKET_RIGHT)
+        equal_sign_index = line.index(cls.EQUAL_SIGN)
+        semicolon_index = line.index(cls.SEMICOLON)
         type = line[:right_bracket_index + 1]
         type = type.strip().replace(' ', '')
         type_parts = type.split(',')
@@ -166,7 +175,7 @@ class ObjectParser(Constant):
         number = number.strip()
         comments = CommentParser.create_comment(line, top_comments)
 
-        return MessageElement(label=None, type=type, name=name, number=number, comments=comments)
+        return MessageElement(type=type, name=name, number=number, comments=comments)
 
     @classmethod
     def parse_service_element(cls, line, top_comments=[]):
@@ -181,3 +190,20 @@ class ObjectParser(Constant):
         comments = CommentParser.create_comment(line, top_comments)
 
         return ServiceElement(label=parts[0], name=parts[1], request=parts[2], response=parts[4], comments=comments)
+
+    @classmethod
+    def get_number_and_rules(self, value):
+        number = value
+        rules = ''
+        if self.LEFT_SQUARE_BRACKET in value:
+            left_brace_stack_index = value.index(self.LEFT_SQUARE_BRACKET)
+            right_brace_stack_index = value.rindex(self.RIGHT_SQUARE_BRACKET)
+            rules = value[left_brace_stack_index:right_brace_stack_index + 1]
+            rules = rules.strip()
+            number = value[:left_brace_stack_index]
+            number = number.strip()
+
+        return AttrDict({
+            'number': number,
+            'rules': rules
+        })

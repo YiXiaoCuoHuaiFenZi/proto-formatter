@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.9] - 2021-09-24
+### Add
+- support constraint rules.
+
 ## [0.1.8] - 2021-09-18
 ### Fix
 - fix index out of range bug.

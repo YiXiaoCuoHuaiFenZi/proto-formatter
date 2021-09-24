@@ -1,16 +1,14 @@
-from proto_formatter.proto_structures import EnumElement
-from proto_formatter.proto_structures import Import
-from proto_formatter.proto_structures import Message
-from proto_formatter.proto_structures import MessageElement
-from proto_formatter.proto_structures import Option
-from proto_formatter.proto_structures import Package
-from proto_formatter.proto_structures import Position
-from proto_formatter.proto_structures import ProtoEnum
-from proto_formatter.proto_structures import Service
-from proto_formatter.proto_structures import ServiceElement
-from proto_formatter.proto_structures import Syntax
-from proto_formatter.proto_structures import Oneof
-from proto_formatter.util import to_lines
+from .proto_structures import EnumElement
+from .proto_structures import Import
+from .proto_structures import Message
+from .proto_structures import MessageElement
+from .proto_structures import Option
+from .proto_structures import Position
+from .proto_structures import ProtoEnum
+from .proto_structures import Service
+from .proto_structures import ServiceElement
+from .proto_structures import Oneof
+from .util import to_lines
 from copy import deepcopy
 
 
@@ -51,7 +49,7 @@ class Protobuf():
         all_lines = []
         for object in self.objects:
             lines = []
-            self.format_object_witout_comment(object, lines, indents=0)
+            self.format_object_without_comment(object, lines, indents=0)
             max_length = self.get_max_length(lines)
             extra = self.get_max_lengthes(lines)
             new_lines = []
@@ -254,10 +252,10 @@ class Protobuf():
 
     def get_make_object_element_string_method(self, obj):
         methods = {
-            'message': self.message_elemnent_string,
-            'enum': self.enum_elemnent_string,
-            'service': self.service_elemnent_string,
-            'oneof': self.message_elemnent_string
+            'message': self.message_element_string,
+            'enum': self.enum_element_string,
+            'service': self.service_element_string,
+            'oneof': self.message_element_string
         }
         return methods[self.get_object_keyword(obj)]
 
@@ -289,7 +287,8 @@ class Protobuf():
 
                     if hasattr(element, 'number'):
                         space_between_number_comment = max_length - max_equa_sign_index - len('=') - len(';') - len(
-                            element.number) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
+                            element.number) - len(
+                            element.rules) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
                     elif line.strip().startswith('rpc'):
                         space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
                     else:
@@ -322,7 +321,7 @@ class Protobuf():
         message_rear = self.make_string('}', indents, [], self.SPACES_BETWEEN_VALUE_COMMENT)
         string_list.append(message_rear)
 
-    def format_object_witout_comment(self, obj, string_list, indents):
+    def format_object_without_comment(self, obj, string_list, indents):
         message_header = self.create_object_header(obj, no_comment=True, indents=indents, max_length=None)
         string_list.append(message_header)
         element_class = self.get_object_element_class(obj)
@@ -340,12 +339,12 @@ class Protobuf():
                 )
                 string_list.append(string)
             else:
-                self.format_object_witout_comment(element, string_list, indents=indents + self.indents_unit)
+                self.format_object_without_comment(element, string_list, indents=indents + self.indents_unit)
 
         message_rear = self.make_indented_line('}', indents=indents)
         string_list.append(message_rear)
 
-    def message_elemnent_string(
+    def message_element_string(
             self,
             obj: MessageElement,
             indents,
@@ -354,17 +353,16 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        if obj.label:
-            line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
-        else:
-            line = f'{obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
+        line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number} {obj.rules}'
+        line = line.strip()  # remove prefix space when obj.label is empty string or rules is empty.
+        line = f'{line};'
 
         if no_comment:
             return self.make_indented_line(line, indents)
         else:
             return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-    def enum_elemnent_string(
+    def enum_element_string(
             self,
             obj: EnumElement,
             indents,
@@ -373,14 +371,16 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number};'
+        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number} {obj.rules}'
+        line = line.strip()  # remove prefix space when rules is empty.
+        line = f'{line};'
 
         if no_comment:
             return self.make_indented_line(line, indents=indents)
         else:
             return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-    def service_elemnent_string(
+    def service_element_string(
             self,
             obj: ServiceElement,
             indents,
