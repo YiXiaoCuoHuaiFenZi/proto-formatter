@@ -254,10 +254,10 @@ class Protobuf():
 
     def get_make_object_element_string_method(self, obj):
         methods = {
-            'message': self.message_elemnent_string,
-            'enum': self.enum_elemnent_string,
-            'service': self.service_elemnent_string,
-            'oneof': self.message_elemnent_string
+            'message': self.message_element_string,
+            'enum': self.enum_element_string,
+            'service': self.service_element_string,
+            'oneof': self.message_element_string
         }
         return methods[self.get_object_keyword(obj)]
 
@@ -345,7 +345,7 @@ class Protobuf():
         message_rear = self.make_indented_line('}', indents=indents)
         string_list.append(message_rear)
 
-    def message_elemnent_string(
+    def message_element_string(
             self,
             obj: MessageElement,
             indents,
@@ -364,7 +364,7 @@ class Protobuf():
         else:
             return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-    def enum_elemnent_string(
+    def enum_element_string(
             self,
             obj: EnumElement,
             indents,
@@ -380,7 +380,7 @@ class Protobuf():
         else:
             return self.make_string(line, indents, obj.comments, space_between_number_comment)
 
-    def service_elemnent_string(
+    def service_element_string(
             self,
             obj: ServiceElement,
             indents,
