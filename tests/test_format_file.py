@@ -1,6 +1,6 @@
 import os
-from proto_formatter import format_file
-from helper import read_proto, test_path
+from src.proto_formatter.m import format_file
+from .helper import read_proto, test_path
 
 
 def test_format_file_align():

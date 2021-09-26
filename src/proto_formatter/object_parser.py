@@ -125,7 +125,7 @@ class ObjectParser(Constant):
         str_before_equqal_sign = line[:equal_sign_index]
         parts = str_before_equqal_sign.split(' ')
         parts = list(filter(None, parts))
-        value = line[equal_sign_index + 1:semicolon_index].strip().replace('"', "").replace("'", "")
+        value = line[equal_sign_index + 1:semicolon_index].strip()
         data = cls.get_number_and_rules(value)
 
         comments = CommentParser.create_comment(line, top_comments)
@@ -146,7 +146,7 @@ class ObjectParser(Constant):
         str_before_equqal_sign = line[:equal_sign_index]
         parts = str_before_equqal_sign.split(' ')
         parts = list(filter(None, parts))
-        value = line[equal_sign_index + 1:semicolon_index].strip().replace('"', "").replace("'", "")
+        value = line[equal_sign_index + 1:semicolon_index].strip()
         data = cls.get_number_and_rules(value)
 
         comments = CommentParser.create_comment(line, top_comments)
