@@ -1,6 +1,6 @@
 import os
-from proto_formatter import format_str
-from helper import read_proto, read_file, test_path
+from src.proto_formatter import format_str
+from .helper import read_proto, read_file, test_path
 
 
 def test_format_str_1_indents_2_top_comment_false_align_by_equal_sign_false_flatten_false_comment_max_length_none():

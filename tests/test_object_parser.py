@@ -1,6 +1,6 @@
 import os
 from proto_formatter.object_parser import ObjectParser
-from helper import test_path, read_lines
+from .helper import test_path, read_lines
 
 
 def test_parse_object_nested():

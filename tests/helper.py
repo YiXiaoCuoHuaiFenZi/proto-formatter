@@ -1,6 +1,6 @@
 import os
 from copy import deepcopy
-from proto_formatter import format_file
+from src.proto_formatter import format_file
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -126,8 +126,8 @@ def make_test_data():
 
 def create_test_cases(test_cases):
     content = """import os
-from proto_formatter import format_str
-from helper import read_proto, read_file, test_path
+from src.proto_formatter import format_str
+from .helper import read_proto, read_file, test_path
 
 
 """

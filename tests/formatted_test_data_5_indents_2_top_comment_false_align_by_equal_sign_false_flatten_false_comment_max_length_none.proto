@@ -38,7 +38,7 @@ message DemoRequestA {
   /*
   **    x must be set to "foo"
   */
-  string x = 0 [(validate.rules).string.const = foo];
+  string x = 0 [(validate.rules).string.const = "foo"];
   /*
   **    asdfghjkytrewqrty
   **    adasdasd

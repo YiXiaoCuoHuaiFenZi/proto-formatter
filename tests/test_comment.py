@@ -1,4 +1,4 @@
-from proto_formatter.comment import CommentParser
+from src.proto_formatter.comment import CommentParser
 
 s1 = """
 
