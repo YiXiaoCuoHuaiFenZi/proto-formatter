@@ -15,6 +15,7 @@ from copy import deepcopy
 class Protobuf():
     SPACES_BETWEEN_VALUE_COMMENT = 2
     SPACES_BEFORE_AFTER_EQUAL_SIGN = 1
+    SPACES_BETWEEN_NUMBER_RULES = 1
     ONE_SPACE = ' '
     TOP_COMMENT_INDENTS = ' ' * 4
 
@@ -288,7 +289,12 @@ class Protobuf():
                     if hasattr(element, 'number'):
                         space_between_number_comment = max_length - max_equa_sign_index - len('=') - len(';') - len(
                             element.number) - len(
-                            element.rules) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN + self.SPACES_BETWEEN_VALUE_COMMENT
+                            element.rules) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN - self.SPACES_BETWEEN_NUMBER_RULES + self.SPACES_BETWEEN_VALUE_COMMENT
+
+                        if element.rules == '':
+                            # the space between number and rules is tripped, so shouldn't count it
+                            space_between_number_comment = space_between_number_comment + self.SPACES_BETWEEN_NUMBER_RULES
+
                     elif line.strip().startswith('rpc'):
                         space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
                     else:
@@ -353,7 +359,7 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number} {obj.rules}'
+        line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number}{self.ONE_SPACE * self.SPACES_BETWEEN_NUMBER_RULES}{obj.rules}'
         line = line.strip()  # remove prefix space when obj.label is empty string or rules is empty.
         line = f'{line};'
 
@@ -371,7 +377,7 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number} {obj.rules}'
+        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number}{self.ONE_SPACE * self.SPACES_BETWEEN_NUMBER_RULES}{obj.rules}'
         line = line.strip()  # remove prefix space when rules is empty.
         line = f'{line};'
 

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.12] - 2021-09-28
+### Fix
+- fix space count issue.
+- 
 ## [0.1.11] - 2021-09-26
 ### Fix
 - fix double quotation marks loss issue.
