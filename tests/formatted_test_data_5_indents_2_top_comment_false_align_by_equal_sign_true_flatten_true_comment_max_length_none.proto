@@ -43,16 +43,16 @@ message DemoRequestA {
   **    asdfghjkytrewqrty
   **    adasdasd
   */
-  common.RequestContext request_context        = 1 [(validate.rules).message.skip = true];                        // Basic request context data
+  common.RequestContext request_context        = 1 [(validate.rules).message.skip = true];                       // Basic request context data
   /*
   **    asdfghjkytrewqrty
   */
-  repeated common.WorkerGroup passenger_groups = 2 [(validate.rules).repeated.min_items = 3];                     // Worker groups
+  repeated common.WorkerGroup passenger_groups = 2 [(validate.rules).repeated.min_items = 3];                    // Worker groups
   /*
   **    adasdasd
   */
-  repeated common.Tiger work_legs              = 3 [(validate.rules).repeated = {min_items: 5, max_items: 10}];   // Chronological work  legs
-  common.Money quote_price                     = 4 [(validate.rules).message.skip = true];                        // Use to validate the work  price, the currency must be the same as
+  repeated common.Tiger work_legs              = 3 [(validate.rules).repeated = {min_items: 5, max_items: 10}];  // Chronological work  legs
+  common.Money quote_price                     = 4 [(validate.rules).message.skip = true];                       // Use to validate the work  price, the currency must be the same as
 }
 
 /*
@@ -66,7 +66,7 @@ message DemoRequestB {
   /*
   **    asdfghjkytrewqrty
   */
-  common.RequestContext request_context        = 1 [(validate.rules).message.skip = true];                           // Basic request context data
+  common.RequestContext request_context        = 1 [(validate.rules).message.skip = true];                          // Basic request context data
   /*
   **    asdfghjkytrewqrty
   */
@@ -75,7 +75,7 @@ message DemoRequestB {
   **    adasdasd
   */
   repeated common.Tiger work_legs              = 3;                                                                 // Chronological work  legs
-  common.Money quote_price                     = 4 [(validate.rules).message.skip = true];                           // Use to validate the work  price, the currency must be the same as
+  common.Money quote_price                     = 4 [(validate.rules).message.skip = true];                          // Use to validate the work  price, the currency must be the same as
   /*
   **    map field comment a
   **    map field comment b
@@ -89,12 +89,12 @@ message DemoRequestB {
 **    BaggageType
 */
 enum BaggageType {
-  BAGGAGE_TYPE_UNSPECIFIED = 0 [(validate.rules).enum.const = 2];             // BAGGAGE_TYPE_UNSPECIFIED
-  BAGGAGE_TYPE_CARRY_ON    = 1 [(validate.rules).enum.defined_only = true];   // BAGGAGE_TYPE_CARRY_ON
+  BAGGAGE_TYPE_UNSPECIFIED = 0 [(validate.rules).enum.const = 2];            // BAGGAGE_TYPE_UNSPECIFIED
+  BAGGAGE_TYPE_CARRY_ON    = 1 [(validate.rules).enum.defined_only = true];  // BAGGAGE_TYPE_CARRY_ON
   /*
   **    asdfgh
   */
-  BAGGAGE_TYPE_CHECKED     = 2 [(validate.rules).enum = {not_in: [1]}];       // BAGGAGE_TYPE_CHECKED
+  BAGGAGE_TYPE_CHECKED     = 2 [(validate.rules).enum = {not_in: [1]}];      // BAGGAGE_TYPE_CHECKED
 }
 
 message DemoRequestC {
@@ -104,8 +104,8 @@ message DemoRequestC {
   **    adasdasd
   */
   repeated common.Tiger work_legs              = 3;                                         // Chronological work  legs
-  common.Money quote_price                     = 4 [(validate.rules).any.required = true];   // Use to validate the work  price, the currency must be the same as
-  common.Money quote_pasdasrice                = 5 [(validate.rules).any.required = true];   // Use to validate the work  price
+  common.Money quote_price                     = 4 [(validate.rules).any.required = true];  // Use to validate the work  price, the currency must be the same as
+  common.Money quote_pasdasrice                = 5 [(validate.rules).any.required = true];  // Use to validate the work  price
 }
 
 /*
