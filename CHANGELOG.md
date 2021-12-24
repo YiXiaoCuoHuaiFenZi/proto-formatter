@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.14] - 2021-12-24
+### Change
+- change the view model.
+
 ## [0.1.13] - 2021-12-24
 ### Add
 - view proto file in text-based terminal created by curses library.

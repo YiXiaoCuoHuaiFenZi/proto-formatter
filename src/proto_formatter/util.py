@@ -1,4 +1,5 @@
 import curses
+import sys
 
 
 def remove_prefix(text, prefix):
@@ -76,3 +77,41 @@ def view_curses_colors():
         stdscr.getch()
 
     curses.wrapper(print_color)
+
+
+def color_print(msg):
+    def func(stdscr):
+        stdscr.scrollok(True)  # enable scrolling, so it can print string with new lines
+
+        curses.start_color()
+        curses.use_default_colors()
+
+        curses.init_pair(124, 123, -1)  # changes the definition of color pair 124
+        curses.init_pair(197, 196, -1)  # changes the definition of color pair 197
+        try:
+            stdscr.addstr(msg + " ", curses.color_pair(124))
+            stdscr.addstr("\n\npress any key to exit view", curses.color_pair(197))  # red text
+        except curses.ERR:
+            # End of screen reached
+            pass
+        stdscr.getch()
+
+    curses.wrapper(func)
+
+
+def proto_print(msg):
+    sys.stdout.write(u"\u001b[38;5;" + str(229) + "m " + msg)
+    print(u"\u001b[0m")
+
+
+def print_info(msg):
+    sys.stdout.write(u"\u001b[38;5;" + str(38) + "m " + msg)
+    print(u"\u001b[0m")
+
+
+def show_colors():
+    for i in range(0, 16):
+        for j in range(0, 16):
+            code = str(i * 16 + j)
+            sys.stdout.write(u"\u001b[38;5;" + code + "m " + code.ljust(4))
+    print(u"\u001b[0m")  # clear

@@ -1,11 +1,10 @@
 import os
-import curses
 import sys
 import types
 from argparse import ArgumentParser
 
 from . import format_file
-from .util import read_file
+from .util import read_file, proto_print, print_info
 
 
 def _get_proto_files(root_path):
@@ -109,25 +108,6 @@ def new_format_help(self):
     return '\n'.join(lines)
 
 
-def color_print(msg):
-    def func(stdscr):
-        stdscr.scrollok(1)  # enable scrolling, so it can print string with new lines
-
-        curses.start_color()
-        curses.use_default_colors()
-        for i in range(0, curses.COLORS):
-            curses.init_pair(i + 1, i, -1)
-        try:
-            stdscr.addstr(msg + " ", curses.color_pair(124))
-            stdscr.addstr("\n\npress any key to exit view", curses.color_pair(197))  # red text
-        except curses.ERR:
-            # End of screen reached
-            pass
-        stdscr.getch()
-
-    curses.wrapper(func)
-
-
 def main():
     parser = ArgumentParser(description="Format protobuf file(s) from a specific target.")  # add_help=False,
     sub_parser = parser.add_subparsers(dest='command')
@@ -205,7 +185,7 @@ def main():
 
         proto_files = list(set(proto_files))  # remove duplicates
         for fp in proto_files:
-            print(f"formatting {fp.replace(root_path, '')}")
+            print_info(f"formatting {fp.replace(root_path, '')}")
             format_file(
                 fp,
                 indents=args.indents,
@@ -215,9 +195,9 @@ def main():
                 comment_max_length=args.comment_max_length,
                 new_fp=None
             )
-        print("Done!")
+        print_info("Done!")
 
     if args.command == 'view':
         args = parser.parse_args()
         fp = os.path.join(os.getcwd(), args.file)
-        color_print(read_file(fp))
+        proto_print(read_file(fp))

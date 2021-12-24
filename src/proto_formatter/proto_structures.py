@@ -1,9 +1,6 @@
 from enum import Enum
 
 
-# from .formatter import Formatter
-
-
 class Position(Enum):
     LEFT = 'left'
     Right = 'right'

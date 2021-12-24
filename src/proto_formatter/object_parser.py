@@ -1,24 +1,16 @@
 import uuid
 from attrdict import AttrDict
-from enum import Enum
 from .detector import Detector
 from .comment import CommentParser
 from .constant import Constant
 from .proto_structures import EnumElement
-from .proto_structures import Import
 from .proto_structures import Message
 from .proto_structures import MessageElement
-from .proto_structures import Option
-from .proto_structures import Package
-from .proto_structures import Position
 from .proto_structures import ProtoEnum
 from .proto_structures import Service
 from .proto_structures import ServiceElement
-from .proto_structures import Syntax
 from .proto_structures import Oneof
-from .proto_structures import OneofElement
 from .protobuf import Protobuf
-from .util import remove_prefix, remove_suffix
 
 
 class ObjectParser(Constant):

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from .proto_structures import EnumElement
 from .proto_structures import Import
 from .proto_structures import Message
@@ -9,7 +10,6 @@ from .proto_structures import Service
 from .proto_structures import ServiceElement
 from .proto_structures import Oneof
 from .util import to_lines
-from copy import deepcopy
 
 
 class Protobuf():
