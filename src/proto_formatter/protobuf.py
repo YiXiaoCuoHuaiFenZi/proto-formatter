@@ -15,7 +15,7 @@ from .util import to_lines
 class Protobuf():
     SPACES_BETWEEN_VALUE_COMMENT = 2
     SPACES_BEFORE_AFTER_EQUAL_SIGN = 1
-    SPACES_BETWEEN_NUMBER_RULES = 1
+    SPACES_BETWEEN_NUMBER_ANNOTATION = 1
     ONE_SPACE = ' '
     TOP_COMMENT_INDENTS = ' ' * 4
 
@@ -102,7 +102,7 @@ class Protobuf():
         return max
 
     def get_max_lengthes(self, lines):
-        max_equa_sign_index = 0
+        max_equal_sign_index = 0
         max_length_of_number = 0
         max_length_of_object_line = 0
         max_length_of_service_element_line = 0
@@ -111,8 +111,8 @@ class Protobuf():
         for line in lines:
             if '=' in line:
                 equa_sign_index = line.index('=')
-                if max_equa_sign_index < equa_sign_index:
-                    max_equa_sign_index = equa_sign_index
+                if max_equal_sign_index < equa_sign_index:
+                    max_equal_sign_index = equa_sign_index
                     s1 = line[:equa_sign_index]
 
                 semicolon_index = line.index(';')
@@ -133,7 +133,7 @@ class Protobuf():
 
         return {
             'max_length': max_length,
-            'max_equa_sign_index': max_equa_sign_index,
+            'max_equal_sign_index': max_equal_sign_index,
             'max_length_of_number': max_length_of_number,
             'max_length_of_object_line': max_length_of_object_line
         }
@@ -168,17 +168,17 @@ class Protobuf():
         return '\n'.join(string_list)
 
     def max_length_of_option(self):
-        max = 0
+        max_length = 0
         for option in self.options:
             if option.value == 'true' or option.value == 'false':
                 line = f'option {option.name} = {option.value};'
             else:
                 line = f'option {option.name} = "{option.value}";'
 
-            if max < len(line):
-                max = len(line)
+            if max_length < len(line):
+                max_length = len(line)
 
-        return max
+        return max_length
 
     def option_string(self, option: Option, max_length):
         if option.value == 'true' or option.value == 'false':
@@ -204,14 +204,14 @@ class Protobuf():
         return '\n'.join(string_list)
 
     def max_length_of_import(self):
-        max = 0
+        max_length = 0
         for obj in self.imports:
             line = f'import "{obj.value}";'
 
-            if max < len(line):
-                max = len(line)
+            if max_length < len(line):
+                max_length = len(line)
 
-        return max
+        return max_length
 
     def import_string(self, obj: Import, max_length):
         line = f'import "{obj.value}";'
@@ -219,7 +219,8 @@ class Protobuf():
 
         return self.make_string(line, 0, obj.comments, space_between_number_comment)
 
-    def get_object_keyword(self, obj):
+    @staticmethod
+    def get_object_keyword(obj):
         if isinstance(obj, Message):
             return 'message'
         if isinstance(obj, ProtoEnum):
@@ -262,7 +263,7 @@ class Protobuf():
 
     def format_object(self, obj, string_list, indents, extra):
         max_length = extra['max_length']
-        max_equa_sign_index = extra['max_equa_sign_index']
+        max_equal_sign_index = extra['max_equal_sign_index']
         max_length_of_number = extra['max_length_of_number']
         max_length_of_object_line = extra['max_length_of_object_line']
 
@@ -284,16 +285,16 @@ class Protobuf():
 
                 if self.align_by_equal_sign:
                     line_without_number = line.split('=')[0].rstrip()
-                    space_between_name_equal_sign = max_equa_sign_index - len(line_without_number)
+                    space_between_name_equal_sign = max_equal_sign_index - len(line_without_number)
 
                     if hasattr(element, 'number'):
-                        space_between_number_comment = max_length - max_equa_sign_index - len('=') - len(';') - len(
+                        space_between_number_comment = max_length - max_equal_sign_index - len('=') - len(';') - len(
                             element.number) - len(
-                            element.rules) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN - self.SPACES_BETWEEN_NUMBER_RULES + self.SPACES_BETWEEN_VALUE_COMMENT
+                            element.annotation) - self.SPACES_BEFORE_AFTER_EQUAL_SIGN - self.SPACES_BETWEEN_NUMBER_ANNOTATION + self.SPACES_BETWEEN_VALUE_COMMENT
 
-                        if element.rules == '':
+                        if element.annotation == '':
                             # the space between number and rules is tripped, so shouldn't count it
-                            space_between_number_comment = space_between_number_comment + self.SPACES_BETWEEN_NUMBER_RULES
+                            space_between_number_comment = space_between_number_comment + self.SPACES_BETWEEN_NUMBER_ANNOTATION
 
                     elif line.strip().startswith('rpc'):
                         space_between_number_comment = max_length - len(line) + self.SPACES_BETWEEN_VALUE_COMMENT
@@ -359,7 +360,7 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number}{self.ONE_SPACE * self.SPACES_BETWEEN_NUMBER_RULES}{obj.rules}'
+        line = f'{obj.label} {obj.type} {obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number}{self.ONE_SPACE * self.SPACES_BETWEEN_NUMBER_ANNOTATION}{obj.annotation}'
         line = line.strip()  # remove prefix space when obj.label is empty string or rules is empty.
         line = f'{line};'
 
@@ -377,7 +378,7 @@ class Protobuf():
             space_between_equal_sign_number,
             space_between_number_comment
     ):
-        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number}{self.ONE_SPACE * self.SPACES_BETWEEN_NUMBER_RULES}{obj.rules}'
+        line = f'{obj.name}{self.ONE_SPACE * space_between_name_equal_sign}={self.ONE_SPACE * space_between_equal_sign_number}{obj.number}{self.ONE_SPACE * self.SPACES_BETWEEN_NUMBER_ANNOTATION}{obj.annotation}'
         line = line.strip()  # remove prefix space when rules is empty.
         line = f'{line};'
 

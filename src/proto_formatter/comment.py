@@ -21,7 +21,7 @@ class CommentParser(Constant):
                 continue
 
             if self._start_with_multiple_line_comment(line):
-                self.multiple_comment_start_symbol_stack.append(self.MULTIPLE_COMENT_START_SYMBOL)
+                self.multiple_comment_start_symbol_stack.append(self.SLASH_STAR)
                 comment_lines.append(line)
                 continue
 
@@ -53,12 +53,12 @@ class CommentParser(Constant):
     def remove_prefix_symble(self, comment_lines):
         processed_lines = []
         for line in comment_lines:
-            if line.strip().startswith(self.SINGLE_COMMENT_SYMBOL):
+            if line.strip().startswith(self.DOUBLE_SLASH):
                 # remove the single comment symble if have, E.g. // I'am a comment
                 processed_lines.append(line.strip()[2:].strip())
             elif self._start_with_multiple_line_comment(line) or self._end_with_multiple_line_comment(line):
                 # remove the multiple comment symble if have, E.g. /* I'am a comment */
-                processed_lines.append(line.strip().replace(self.MULTIPLE_COMENT_START_SYMBOL, "").replace(
+                processed_lines.append(line.strip().replace(self.SLASH_STAR, "").replace(
                     self.MULTIPLE_COMENT_END_SYMBOL, ''))
             elif (line.strip().startswith(self.STAR) or line.strip().startswith(
                     self.STAR * 2)) and not self._end_with_multiple_line_comment(line):
@@ -75,10 +75,10 @@ class CommentParser(Constant):
         return processed_lines
 
     def _start_with_single_line_comment(self, line):
-        return line.strip().startswith(self.SINGLE_COMMENT_SYMBOL)
+        return line.strip().startswith(self.DOUBLE_SLASH)
 
     def _start_with_multiple_line_comment(self, line):
-        return line.strip().startswith(self.MULTIPLE_COMENT_START_SYMBOL)
+        return line.strip().startswith(self.SLASH_STAR)
 
     def _end_with_multiple_line_comment(self, line):
         return line.strip().endswith(self.MULTIPLE_COMENT_END_SYMBOL)
@@ -101,9 +101,9 @@ class CommentParser(Constant):
     @staticmethod
     def parse_single_line_comment(line):
         comment = None
-        if line.count(CommentParser.SINGLE_COMMENT_SYMBOL) > 0:
-            start_index = line.index(CommentParser.SINGLE_COMMENT_SYMBOL)
-            comment_str = line[start_index:].lstrip(CommentParser.SINGLE_COMMENT_SYMBOL).strip()
+        if line.count(CommentParser.DOUBLE_SLASH) > 0:
+            start_index = line.index(CommentParser.DOUBLE_SLASH)
+            comment_str = line[start_index:].lstrip(CommentParser.DOUBLE_SLASH).strip()
             comment = Comment(comment_str, Position.Right)
         return comment
 
@@ -114,8 +114,8 @@ class CommentParser(Constant):
             comment_lines = comments.pop(0)
             text = ''.join(comment_lines)
             text = text.strip()
-            text = remove_prefix(text, CommentParser.SINGLE_COMMENT_SYMBOL)
-            text = remove_prefix(text, CommentParser.MULTIPLE_COMENT_START_SYMBOL)
+            text = remove_prefix(text, CommentParser.DOUBLE_SLASH)
+            text = remove_prefix(text, CommentParser.SLASH_STAR)
             text = remove_suffix(text, CommentParser.MULTIPLE_COMENT_END_SYMBOL)
             text = text.strip()
             result.append(Comment(text, Position.TOP))

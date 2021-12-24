@@ -36,8 +36,8 @@ class ObjectParser(Constant):
     def parse_obj_field(cls, line, top_comments):
         raise NotImplementedError("Element parse not implemented.")
 
-    def parse_and_add(self, proto_obj: Protobuf, lines, top_comment_list):
-        self.parse(lines, top_comment_list, True)
+    def parse_and_add(self, proto_obj: Protobuf, lines):
+        self.parse(lines)
         proto_obj.objects.append(self.obj)
 
     def parse(self, lines):
@@ -46,14 +46,14 @@ class ObjectParser(Constant):
             return
 
         first_line = lines[0]
-        if Detector()._is_object_start(first_line):
-            self.left_brace_stack.append(self.BRACE_LEFT)
+        if Detector().is_object_start(first_line):
+            self.left_brace_stack.append(self.LEFT_BRACE)
 
-        type = Detector().get_type(first_line)
-        if 'message' == type or 'enum' == type or 'service' == type or 'oneof' == type:
+        proto_type = Detector().get_type(first_line)
+        if 'message' == proto_type or 'enum' == proto_type or 'service' == proto_type or 'oneof' == proto_type:
             name = self._get_obj_name(first_line)
             top_comments = CommentParser.create_comment(first_line, top_comments)
-            obj = self.new_obj(type, name, top_comments)
+            obj = self.create_proto_obj(proto_type, name, top_comments)
             self.objects_dict[obj.id] = obj
 
             if self.obj:
@@ -66,15 +66,15 @@ class ObjectParser(Constant):
 
             lines.pop(0)
             return self.parse(lines)
-        elif 'enum_element' == type or 'message_element' == type or 'service_element' == type or 'oneof' == type:
-            element = self.parse_element(type, first_line, top_comments)
+        elif 'enum_element' == proto_type or 'message_element' == proto_type or 'service_element' == proto_type or 'oneof' == proto_type:
+            element = self.parse_element(proto_type, first_line, top_comments)
             self.current_obj.elements.append(element)
 
             lines.pop(0)
             return self.parse(lines)
         else:
-            if Detector()._is_object_end(first_line):
-                self.right_brace_stack.append(self.BRACE_RIGHT)
+            if Detector().is_object_end(first_line):
+                self.right_brace_stack.append(self.RIGHT_BRACE)
                 if self.current_obj.parent_id is None:  # root node, finish a root level object parse
                     self.objects.append(self.current_obj)
                     self.obj = None  # finshed a object and all netested inner objects(if has) parse.
@@ -85,13 +85,15 @@ class ObjectParser(Constant):
                 return self.parse(lines)
 
     @classmethod
-    def new_obj(cls, type, name, comments=[]):
+    def create_proto_obj(cls, proto_type, name, comments=None):
+        if comments is None:
+            comments = []
         obj_class = {
             'enum': ProtoEnum,
             'message': Message,
             'service': Service,
             'oneof': Oneof
-        }[type]
+        }[proto_type]
 
         obj = obj_class(name=name, elements=[], comments=comments)
         obj.id = uuid.uuid4().hex
@@ -99,7 +101,9 @@ class ObjectParser(Constant):
         return obj
 
     @classmethod
-    def parse_element(cls, type, line, top_comments=[]):
+    def parse_element(cls, type, line, top_comments=None):
+        if top_comments is None:
+            top_comments = []
         parse_method = {
             'enum_element': cls.parse_enum_element,
             'message_element': cls.parse_message_element,
@@ -109,8 +113,10 @@ class ObjectParser(Constant):
         return parse_method(line, top_comments=top_comments)
 
     @classmethod
-    def parse_enum_element(cls, line, top_comments=[]):
+    def parse_enum_element(cls, line, top_comments=None):
         # BAGGAGE_TYPE_CARRY_ON = 1;
+        if top_comments is None:
+            top_comments = []
         line = line.strip()
         equal_sign_index = line.index(cls.EQUAL_SIGN)
         semicolon_index = line.index(cls.SEMICOLON)
@@ -118,17 +124,19 @@ class ObjectParser(Constant):
         parts = str_before_equqal_sign.split(' ')
         parts = list(filter(None, parts))
         value = line[equal_sign_index + 1:semicolon_index].strip()
-        data = cls.get_number_and_rules(value)
+        data = cls.get_number_and_annotation(value)
 
         comments = CommentParser.create_comment(line, top_comments)
-        return EnumElement(name=parts[0], number=data.number, rules=data.rules, comments=comments)
+        return EnumElement(name=parts[0], number=data.number, annotation=data.annotation, comments=comments)
 
     @classmethod
-    def parse_message_element(cls, line, top_comments=[]):
+    def parse_message_element(cls, line, top_comments=None):
         # common.RequestContext  request_context = 1;
         # map<string, Project> projects = 3;
         # // x must be either "foo", "bar", or "baz"
         # string x = 1 [(validate.rules).string = {in: ["foo", "bar", "baz"]}];
+        if top_comments is None:
+            top_comments = []
         if 'map<' in line:
             return cls.make_map_element(line, top_comments)
 
@@ -139,39 +147,43 @@ class ObjectParser(Constant):
         parts = str_before_equqal_sign.split(' ')
         parts = list(filter(None, parts))
         value = line[equal_sign_index + 1:semicolon_index].strip()
-        data = cls.get_number_and_rules(value)
+        data = cls.get_number_and_annotation(value)
 
         comments = CommentParser.create_comment(line, top_comments)
         if len(parts) == 2:
-            return MessageElement(type=parts[0], name=parts[1], number=data.number, rules=data.rules,
+            return MessageElement(type=parts[0], name=parts[1], number=data.number, annotation=data.annotation,
                                   comments=comments)
         if len(parts) == 3:
-            return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=data.number, rules=data.rules,
+            return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=data.number, annotation=data.annotation,
                                   comments=comments)
 
         return None
 
     @classmethod
-    def make_map_element(cls, line, top_comments=[]):
+    def make_map_element(cls, line, top_comments=None):
         # map<string, Project> projects = 3;
-        right_bracket_index = line.index(cls.ANGLE_BRACKET_RIGHT)
+        if top_comments is None:
+            top_comments = []
+        right_bracket_index = line.index(cls.RIGHT_ANGLE_BRACKET)
         equal_sign_index = line.index(cls.EQUAL_SIGN)
         semicolon_index = line.index(cls.SEMICOLON)
-        type = line[:right_bracket_index + 1]
-        type = type.strip().replace(' ', '')
-        type_parts = type.split(',')
-        type = ', '.join(type_parts)
+        map_type = line[:right_bracket_index + 1]
+        map_type = map_type.strip().replace(' ', '')
+        type_parts = map_type.split(',')
+        map_type = ', '.join(type_parts)
         name = line[right_bracket_index + 1:equal_sign_index]
         name = name.strip()
         number = line[equal_sign_index + 1:semicolon_index]
         number = number.strip()
         comments = CommentParser.create_comment(line, top_comments)
 
-        return MessageElement(type=type, name=name, number=number, comments=comments)
+        return MessageElement(type=map_type, name=name, number=number, comments=comments)
 
     @classmethod
-    def parse_service_element(cls, line, top_comments=[]):
+    def parse_service_element(cls, line, top_comments=None):
         # rpc SeatAvailability (SeatAvailabilityRequest) returns (SeatAvailabilityResponse);
+        if top_comments is None:
+            top_comments = []
         line = line.strip().replace('(', '')
         line = line.replace(')', '')
 
@@ -184,18 +196,18 @@ class ObjectParser(Constant):
         return ServiceElement(label=parts[0], name=parts[1], request=parts[2], response=parts[4], comments=comments)
 
     @classmethod
-    def get_number_and_rules(self, value):
+    def get_number_and_annotation(cls, value):
         number = value
-        rules = ''
-        if self.LEFT_SQUARE_BRACKET in value:
-            left_brace_stack_index = value.index(self.LEFT_SQUARE_BRACKET)
-            right_brace_stack_index = value.rindex(self.RIGHT_SQUARE_BRACKET)
-            rules = value[left_brace_stack_index:right_brace_stack_index + 1]
-            rules = rules.strip()
+        annotation = ''
+        if cls.LEFT_SQUARE_BRACKET in value:
+            left_brace_stack_index = value.index(cls.LEFT_SQUARE_BRACKET)
+            right_brace_stack_index = value.rindex(cls.RIGHT_SQUARE_BRACKET)
+            annotation = value[left_brace_stack_index:right_brace_stack_index + 1]
+            annotation = annotation.strip()
             number = value[:left_brace_stack_index]
             number = number.strip()
 
         return AttrDict({
             'number': number,
-            'rules': rules
+            'annotation': annotation
         })

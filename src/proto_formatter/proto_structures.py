@@ -40,12 +40,12 @@ class Option():
 
 
 class MessageElement():
-    def __init__(self, type, name, number, rules='', label='', comments=[]):
+    def __init__(self, type, name, number, annotation='', label='', comments=[]):
         self.label = label
         self.type = type
         self.name = name
         self.number = number
-        self.rules = rules
+        self.annotation = annotation
         self.comments = comments
 
 
@@ -57,12 +57,12 @@ class Message():
 
 
 class OneofElement():
-    def __init__(self, type, name, number, rules='', label='', comments=[]):
+    def __init__(self, type, name, number, annotation='', label='', comments=[]):
         self.label = label
         self.type = type
         self.name = name
         self.number = number
-        self.rules = rules
+        self.annotation = annotation
         self.comments = comments
 
 
@@ -74,10 +74,10 @@ class Oneof():
 
 
 class EnumElement():
-    def __init__(self, name, number, rules='', comments=[]):
+    def __init__(self, name, number, annotation='', comments=[]):
         self.name = name
         self.number = number
-        self.rules = rules
+        self.annotation = annotation
         self.comments = comments
 
 
