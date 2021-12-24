@@ -29,7 +29,7 @@ def find_word_start_index(line, target_index):
 
 def find_word_end_index(line, target_index):
     index = target_index + 1
-    while True:
+    while index <= len(line):
         if line[index].lower() in ' \n':
             return index
         index = index + 1
