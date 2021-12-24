@@ -1,6 +1,6 @@
 class Constant(object):
     SLASH_STAR = '/*'
-    MULTIPLE_COMENT_END_SYMBOL = '*/'
+    STAR_SLASH = '*/'
     STAR = '*'
     DOUBLE_SLASH = '//'
     LEFT_BRACE = '{'
@@ -9,5 +9,5 @@ class Constant(object):
     RIGHT_SQUARE_BRACKET = ']'
     EQUAL_SIGN = '='
     SEMICOLON = ';'
-    ANGLE_BRACKET_LEFT = '<'
+    LEFT_ANGLE_BRACKET = '<'
     RIGHT_ANGLE_BRACKET = '>'

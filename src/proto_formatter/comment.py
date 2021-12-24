@@ -29,7 +29,7 @@ class CommentParser(Constant):
                 comment_lines.append(line)
 
             if self._end_with_multiple_line_comment(line):
-                self.multiple_comment_end_symbol_stack.append(self.MULTIPLE_COMENT_END_SYMBOL)
+                self.multiple_comment_end_symbol_stack.append(self.STAR_SLASH)
                 continue
 
             if line and not self.is_comment(line):
@@ -58,8 +58,7 @@ class CommentParser(Constant):
                 processed_lines.append(line.strip()[2:].strip())
             elif self._start_with_multiple_line_comment(line) or self._end_with_multiple_line_comment(line):
                 # remove the multiple comment symble if have, E.g. /* I'am a comment */
-                processed_lines.append(line.strip().replace(self.SLASH_STAR, "").replace(
-                    self.MULTIPLE_COMENT_END_SYMBOL, ''))
+                processed_lines.append(line.strip().replace(self.SLASH_STAR, "").replace(self.STAR_SLASH, ''))
             elif (line.strip().startswith(self.STAR) or line.strip().startswith(
                     self.STAR * 2)) and not self._end_with_multiple_line_comment(line):
                 # remove the multiple comment symble if have, E.g. * I'am a comment in multiple line comment
@@ -81,7 +80,7 @@ class CommentParser(Constant):
         return line.strip().startswith(self.SLASH_STAR)
 
     def _end_with_multiple_line_comment(self, line):
-        return line.strip().endswith(self.MULTIPLE_COMENT_END_SYMBOL)
+        return line.strip().endswith(self.STAR_SLASH)
 
     def _is_multiple_comment(self):
         if len(self.multiple_comment_start_symbol_stack) == 0:
@@ -116,7 +115,7 @@ class CommentParser(Constant):
             text = text.strip()
             text = remove_prefix(text, CommentParser.DOUBLE_SLASH)
             text = remove_prefix(text, CommentParser.SLASH_STAR)
-            text = remove_suffix(text, CommentParser.MULTIPLE_COMENT_END_SYMBOL)
+            text = remove_suffix(text, CommentParser.STAR_SLASH)
             text = text.strip()
             result.append(Comment(text, Position.TOP))
         return result
