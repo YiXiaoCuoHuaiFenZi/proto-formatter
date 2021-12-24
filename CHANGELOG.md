@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.13] - 2021-12-24
+### Add
+- view proto file in text-based terminal created by curses library.
+
 ## [0.1.12] - 2021-09-28
 ### Fix
 - fix space count issue.
-- 
+
 ## [0.1.11] - 2021-09-26
 ### Fix
 - fix double quotation marks loss issue.

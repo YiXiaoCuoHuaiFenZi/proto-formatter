@@ -1,3 +1,6 @@
+import curses
+
+
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
@@ -16,7 +19,7 @@ def is_word(line, target_index):
 
 def find_word_start_index(line, target_index):
     index = target_index - 1
-    while (index >= 0):
+    while index >= 0:
         if line[index].lower() in ' \n':
             return index
         index = index - 1
@@ -25,7 +28,7 @@ def find_word_start_index(line, target_index):
 
 def find_word_end_index(line, target_index):
     index = target_index + 1
-    while (True):
+    while True:
         if line[index].lower() in ' \n':
             return index
         index = index + 1
@@ -34,7 +37,7 @@ def find_word_end_index(line, target_index):
 
 def to_lines(line, length):
     lines = []
-    while (True):
+    while True:
         if len(line) <= length:
             lines.append(line)
             break
@@ -56,3 +59,20 @@ def to_lines(line, length):
 def read_file(file_path):
     with open(file_path) as f:
         return f.read()
+
+
+def view_curses_colors():
+    def print_color(stdscr):
+        curses.start_color()
+        curses.use_default_colors()
+        for i in range(0, curses.COLORS):
+            curses.init_pair(i + 1, i, -1)
+        try:
+            for i in range(0, 255):
+                stdscr.addstr(str(i) + " ", curses.color_pair(i))
+        except curses.ERR:
+            # End of screen reached
+            pass
+        stdscr.getch()
+
+    curses.wrapper(print_color)

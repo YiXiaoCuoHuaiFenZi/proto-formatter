@@ -1,21 +1,23 @@
 import os
+import curses
 import sys
 import types
-import argparse
-from proto_formatter import format_file
+from argparse import ArgumentParser
+
+from . import format_file
 from .util import read_file
 
 
 def _get_proto_files(root_path):
     proto_files = []
-    for path, subdirs, files in os.walk(root_path):
+    for path, sub_dirs, files in os.walk(root_path):
         for name in files:
             if name.endswith('.proto'):
                 proto_files.append(os.path.join(path, name))
     return proto_files
 
 
-def get_option_max_length(parser):
+def get_option_max_length(parser: ArgumentParser):
     actions = parser._actions
     max_length = 0
     for action in actions:
@@ -34,21 +36,21 @@ def get_option_max_length(parser):
 
 
 def format_actions(max_length_of_options, actions):
-    saboah = 4  # space amount between option and help
+    spaces = 4  # space amount between option and help
 
     lines = ['general options:']
     for action in actions:
         if action.option_strings:
-            fill_spaces_amount = max_length_of_options - len(action.option_strings[0]) + saboah
+            fill_spaces_amount = max_length_of_options - len(action.option_strings[0]) + spaces
             line = f"{' ' * 2}{action.option_strings[0]}{' ' * fill_spaces_amount}{action.help}"
             lines.append(line)
 
     return lines
 
 
-def make_usage(parser):
+def make_usage(parser: ArgumentParser):
     max_length_of_names = get_option_max_length(parser)
-    ONE_SPACE = ' '
+    one_space = ' '
     indents = 2
     saboah = 4  # space amount between option and help
     option_lines = ["", "general options:"]
@@ -57,18 +59,18 @@ def make_usage(parser):
     for action in actions:
         for option_string in action.option_strings:
             fill_spaces_amount = max_length_of_names - len(option_string) + saboah
-            line = f"{ONE_SPACE * indents}{option_string}{ONE_SPACE * fill_spaces_amount}{action.help}"
+            line = f"{one_space * indents}{option_string}{one_space * fill_spaces_amount}{action.help}"
             option_lines.append(line)
 
         if action.choices:
             for command, sub_parser in action.choices.items():
                 fill_spaces_amount = max_length_of_names - len(command) + saboah
-                line = f"{ONE_SPACE * indents}{command}{ONE_SPACE * fill_spaces_amount}{sub_parser.description}"
+                line = f"{one_space * indents}{command}{one_space * fill_spaces_amount}{sub_parser.description}"
                 commands_lines.append(line)
                 for action_name, action_value in sub_parser._option_string_actions.items():
                     for option_string in action_value.option_strings:
                         fill_spaces_amount = max_length_of_names - len(option_string) + saboah
-                        line = f"{ONE_SPACE * indents}{option_string}{ONE_SPACE * fill_spaces_amount}{action_value.help}"
+                        line = f"{one_space * indents}{option_string}{one_space * fill_spaces_amount}{action_value.help}"
                         option_lines.append(line)
     content = """
 {before_stars}
@@ -107,8 +109,27 @@ def new_format_help(self):
     return '\n'.join(lines)
 
 
+def color_print(msg):
+    def func(stdscr):
+        stdscr.scrollok(1)  # enable scrolling, so it can print string with new lines
+
+        curses.start_color()
+        curses.use_default_colors()
+        for i in range(0, curses.COLORS):
+            curses.init_pair(i + 1, i, -1)
+        try:
+            stdscr.addstr(msg + " ", curses.color_pair(124))
+            stdscr.addstr("\n\npress any key to exit view", curses.color_pair(197))  # red text
+        except curses.ERR:
+            # End of screen reached
+            pass
+        stdscr.getch()
+
+    curses.wrapper(func)
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Format protobuf file(s) from a specific target.")  # add_help=False,
+    parser = ArgumentParser(description="Format protobuf file(s) from a specific target.")  # add_help=False,
     sub_parser = parser.add_subparsers(dest='command')
     format_parser = sub_parser.add_parser('format', description='format protobuf files', add_help=False)
     view_parser = sub_parser.add_parser('view', description="view file", add_help=False)
@@ -176,8 +197,10 @@ def main():
         if args.files:
             proto_files = [os.path.join(root_path, file) for file in args.files]
         elif args.folder:
+            # get all proto files in the specified folder and all sub folders
             proto_files = _get_proto_files(args.folder)
         else:
+            # get all proto files in the current folder and all sub folders
             proto_files = _get_proto_files(os.getcwd())
 
         proto_files = list(set(proto_files))  # remove duplicates
@@ -197,4 +220,4 @@ def main():
     if args.command == 'view':
         args = parser.parse_args()
         fp = os.path.join(os.getcwd(), args.file)
-        print(read_file(fp))
+        color_print(read_file(fp))
