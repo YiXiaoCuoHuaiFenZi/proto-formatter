@@ -38,6 +38,14 @@ class Option():
         self.value = value
         self.comments = comments
 
+class Element():
+    def __init__(self, type, name, number, annotation='', label='', comments=[]):
+        self.label = label
+        self.type = type
+        self.name = name
+        self.number = number
+        self.annotation = annotation
+        self.comments = comments
 
 class MessageElement():
     def __init__(self, type, name, number, annotation='', label='', comments=[]):
@@ -55,6 +63,20 @@ class Message():
         self.elements = elements
         self.comments = comments
 
+class ExtendElement():
+    def __init__(self, type, name, number, annotation='', label='', comments=[]):
+        self.label = label
+        self.type = type
+        self.name = name
+        self.number = number
+        self.annotation = annotation
+        self.comments = comments
+
+class Extend():
+    def __init__(self, name, elements=[], comments=[]):
+        self.name = name
+        self.elements = elements
+        self.comments = comments
 
 class OneofElement():
     def __init__(self, type, name, number, annotation='', label='', comments=[]):

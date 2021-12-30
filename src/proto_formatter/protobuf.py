@@ -1,5 +1,7 @@
 from copy import deepcopy
 from .proto_structures import EnumElement
+from .proto_structures import ExtendElement
+from .proto_structures import Extend
 from .proto_structures import Import
 from .proto_structures import Message
 from .proto_structures import MessageElement
@@ -227,6 +229,8 @@ class Protobuf():
             return 'enum'
         if isinstance(obj, Service):
             return 'service'
+        if isinstance(obj, Extend):
+            return 'extend'
         if isinstance(obj, Oneof):
             return 'oneof'
 
@@ -248,6 +252,7 @@ class Protobuf():
             'message': MessageElement,
             'enum': EnumElement,
             'service': ServiceElement,
+            'extend': MessageElement,
             'oneof': MessageElement
         }
         return classes[self.get_object_keyword(obj)]
@@ -257,6 +262,7 @@ class Protobuf():
             'message': self.message_element_string,
             'enum': self.enum_element_string,
             'service': self.service_element_string,
+            'extend': self.extend_element_string,
             'oneof': self.message_element_string
         }
         return methods[self.get_object_keyword(obj)]
@@ -368,6 +374,23 @@ class Protobuf():
             return self.make_indented_line(line, indents)
         else:
             return self.make_string(line, indents, obj.comments, space_between_number_comment)
+
+    def extend_element_string(
+            self,
+            obj: ExtendElement,
+            indents,
+            no_comment,
+            space_between_name_equal_sign,
+            space_between_equal_sign_number,
+            space_between_number_comment
+    ):
+        # using the message element making string
+        return self.message_element_string(obj,
+                                           indents,
+                                           no_comment,
+                                           space_between_name_equal_sign,
+                                           space_between_equal_sign_number,
+                                           space_between_number_comment)
 
     def enum_element_string(
             self,

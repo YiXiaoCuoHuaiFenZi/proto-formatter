@@ -4,6 +4,8 @@ from .detector import Detector
 from .comment import CommentParser
 from .constant import Constant
 from .proto_structures import EnumElement
+from .proto_structures import Extend
+from .proto_structures import ExtendElement
 from .proto_structures import Message
 from .proto_structures import MessageElement
 from .proto_structures import ProtoEnum
@@ -50,7 +52,7 @@ class ObjectParser(Constant):
             self.left_brace_stack.append(self.LEFT_BRACE)
 
         proto_type = Detector().get_type(first_line)
-        if 'message' == proto_type or 'enum' == proto_type or 'service' == proto_type or 'oneof' == proto_type:
+        if 'message' == proto_type or 'enum' == proto_type or 'service' == proto_type or 'extend' == proto_type or 'oneof' == proto_type:
             name = self._get_obj_name(first_line)
             top_comments = CommentParser.create_comment(first_line, top_comments)
             obj = self.create_proto_obj(proto_type, name, top_comments)
@@ -92,6 +94,7 @@ class ObjectParser(Constant):
             'enum': ProtoEnum,
             'message': Message,
             'service': Service,
+            'extend': Extend,
             'oneof': Oneof
         }[proto_type]
 
@@ -101,14 +104,15 @@ class ObjectParser(Constant):
         return obj
 
     @classmethod
-    def parse_element(cls, type, line, top_comments=None):
+    def parse_element(cls, proto_type, line, top_comments=None):
         if top_comments is None:
             top_comments = []
         parse_method = {
             'enum_element': cls.parse_enum_element,
             'message_element': cls.parse_message_element,
-            'service_element': cls.parse_service_element
-        }[type]
+            # 'service_element': cls.parse_service_element,
+            'extend_element': cls.parse_extend_element
+        }[proto_type]
 
         return parse_method(line, top_comments=top_comments)
 
@@ -154,8 +158,32 @@ class ObjectParser(Constant):
             return MessageElement(type=parts[0], name=parts[1], number=data.number, annotation=data.annotation,
                                   comments=comments)
         if len(parts) == 3:
-            return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=data.number, annotation=data.annotation,
+            return MessageElement(label=parts[0], type=parts[1], name=parts[2], number=data.number,
+                                  annotation=data.annotation,
                                   comments=comments)
+
+        return None
+
+    @classmethod
+    def parse_extend_element(cls, line, top_comments=None):
+        # common.RequestContext  request_context = 1;
+        line = line.strip()
+        equal_sign_index = line.index(cls.EQUAL_SIGN)
+        semicolon_index = line.index(cls.SEMICOLON)
+        str_before_equqal_sign = line[:equal_sign_index]
+        parts = str_before_equqal_sign.split(' ')
+        parts = list(filter(None, parts))
+        value = line[equal_sign_index + 1:semicolon_index].strip()
+        data = cls.get_number_and_annotation(value)
+
+        comments = CommentParser.create_comment(line, top_comments)
+        if len(parts) == 2:
+            return ExtendElement(type=parts[0], name=parts[1], number=data.number, annotation=data.annotation,
+                                 comments=comments)
+        if len(parts) == 3:
+            return ExtendElement(label=parts[0], type=parts[1], name=parts[2], number=data.number,
+                                 annotation=data.annotation,
+                                 comments=comments)
 
         return None
 

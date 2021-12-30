@@ -27,8 +27,12 @@ class Detector(Constant):
             return 'enum'
         if self.is_service_object(line):
             return 'service'
+        if self.is_extend_object(line):
+            return 'extend'
         if self.is_message_element(line):
             return 'message_element'
+        # if self.is_extend_element(line):
+        #     return 'extend_element'
         if self.is_enum_element(line):
             return 'enum_element'
         if self.is_service_element(line):
@@ -78,6 +82,9 @@ class Detector(Constant):
 
     def is_message_object(self, line):
         return line.strip().startswith('message ') and line.strip().count(self.LEFT_BRACE)
+
+    def is_extend_object(self, line):
+        return line.strip().startswith('extend ') and line.strip().count(self.LEFT_BRACE)
 
     def is_oneof_object(self, line):
         return line.strip().startswith('oneof ') and line.strip().count(self.LEFT_BRACE)

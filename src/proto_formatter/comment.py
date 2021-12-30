@@ -64,7 +64,7 @@ class CommentParser(Constant):
                 # remove the multiple comment symble if have, E.g. * I'am a comment in multiple line comment
                 # Example:
                 # /*
-                # **    Device information, including user agent, device type and ip address.
+                # **    Device information, including user agent, device proto_type and ip address.
                 # */
                 #
                 processed_lines.append(line.strip().replace(self.STAR, ""))

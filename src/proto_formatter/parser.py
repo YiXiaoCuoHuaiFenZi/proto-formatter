@@ -57,9 +57,9 @@ class ProtoParser(Constant):
             return self.protobuf_obj
 
         first_line = lines[0]
-        type = Detector().get_type(first_line)
+        proto_type = Detector().get_type(first_line)
 
-        parser = self._get_parser(type)
+        parser = self._get_parser(proto_type)
         if parser is None:
             return self.protobuf_obj
 
@@ -79,19 +79,15 @@ class ProtoParser(Constant):
         return self._parse(lines)
 
     def _get_parser(self, keyword):
-        if keyword == 'syntax':
-            return SyntaxParser()
-        elif keyword == 'package':
-            return PackageParser()
-        elif keyword == 'option':
-            return OptionParser()
-        elif keyword == 'import':
-            return ImportParser()
-        elif keyword == 'message':
-            return ObjectParser()
-        elif keyword == 'enum':
-            return ObjectParser()
-        elif keyword == 'service':
-            return ObjectParser()
-        elif keyword == 'oneof':
-            return ObjectParser()
+        return {
+            'syntax': SyntaxParser(),
+            'package': PackageParser(),
+            'option': OptionParser(),
+            'import': ImportParser(),
+            'message': ObjectParser(),
+            'enum': ObjectParser(),
+            'extend': ObjectParser(),
+            'service': ObjectParser(),
+            'oneof': SyntaxParser()
+        }[keyword]
+ 
