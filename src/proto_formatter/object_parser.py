@@ -110,8 +110,8 @@ class ObjectParser(Constant):
         parse_method = {
             'enum_element': cls.parse_enum_element,
             'message_element': cls.parse_message_element,
-            # 'service_element': cls.parse_service_element,
-            'extend_element': cls.parse_extend_element
+            'service_element': cls.parse_service_element,
+            # 'extend_element': cls.parse_extend_element
         }[proto_type]
 
         return parse_method(line, top_comments=top_comments)

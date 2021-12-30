@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.15] - 2021-12-30
+### Add
+- support extend type.
+- refactor.
+
 ## [0.1.14] - 2021-12-24
 ### Change
 - change the view model.
