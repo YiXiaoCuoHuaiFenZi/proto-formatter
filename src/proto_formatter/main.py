@@ -128,7 +128,7 @@ def main():
         "--folder",
         type=str,
         default=os.getcwd(),
-        help="target directory, default is current directory, all protobuf files under it and its' subdirectories will be formatted."
+        help="target directory, default is current directory, all protobuf files under it including all subdirectories will be formatted."
     )
     format_parser.add_argument(
         "--indents",

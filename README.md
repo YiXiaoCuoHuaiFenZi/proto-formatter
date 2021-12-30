@@ -27,12 +27,12 @@ general options:
   -h                       show this help message and exit
   --help                   show this help message and exit
   --files                  target protobuf files need to be formatted.
-  --folder                 target folder or path, default is current folder, all protubuf files under it and its' subdirectories will be formatted.
+  --folder                 target directory, default is current directory, all protobuf files under it including all subdirectories will be formatted.
   --indents                the number of indented spaces
   --top-comment            format all comments as top comments(above the target line)
-  --align-by-equal-sign    align the code by equal sign
+  --align-by-equal-sign    align the code by equal sign: 'True' or 'False'
   --flatten                flatten nested objects
-  --comment-max-length     the max length of comment line, defalut is 999999.
+  --comment-max-length     the max length of comment line, default is 999999.
   --file                   target protobuf file, only used for command 'view'
 ```
 It also provides a method ``format_str`` to format a protobuf string.
