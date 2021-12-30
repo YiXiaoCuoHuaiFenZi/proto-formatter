@@ -1,3 +1,6 @@
+import os
+import ntpath
+
 from .parser import ProtoParser
 
 
@@ -45,8 +48,8 @@ def format_file(fp, indents=2, top_comment=False, align_by_equal_sign=False, fla
     :param new_fp: the file path of new formatted protobuf file. Rewrite the original file if it is not specified.
     :return: file content size.
     """
-    parser = ProtoParser()
-    protobuf_obj = parser.load(fp=fp)
+    proto_parser = ProtoParser()
+    protobuf_obj = proto_parser.load(fp=fp)
     content = protobuf_obj.to_string(
         indents=indents,
         top_comment=top_comment,
@@ -57,12 +60,17 @@ def format_file(fp, indents=2, top_comment=False, align_by_equal_sign=False, fla
 
     if new_fp:
         fp = new_fp
+        if not os.path.exists(new_fp):
+            path, tail = ntpath.split(new_fp)
+            if not os.path.exists(path):
+                os.makedirs(path)
 
     with open(fp, 'w') as f:
         return f.write(content)
 
 
-def format_str(proto_str, indents=2, top_comment=False, align_by_equal_sign=False, flatten=False, comment_max_length=None):
+def format_str(proto_str, indents=2, top_comment=False, align_by_equal_sign=False, flatten=False,
+               comment_max_length=None):
     """
     Format a protobuf string, return the formatted string.
     :param proto_str: protobuf string need to be formatted.
@@ -103,8 +111,8 @@ def format_str(proto_str, indents=2, top_comment=False, align_by_equal_sign=Fals
     :param comment_max_length: the max length of comment line, defalut is no limitation.
     :return: formatted string.
     """
-    parser = ProtoParser()
-    protobuf_obj = parser.loads(proto_str=proto_str.strip())
+    proto_parser = ProtoParser()
+    protobuf_obj = proto_parser.loads(proto_str=proto_str.strip())
     content = protobuf_obj.to_string(
         indents=indents,
         top_comment=top_comment,

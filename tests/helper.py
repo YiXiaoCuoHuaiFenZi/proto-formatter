@@ -14,7 +14,7 @@ def read_lines(file_path):
 
 
 def read_proto(proto_file_name):
-    fp = os.path.join(test_path, proto_file_name)
+    fp = os.path.join(test_path, 'test_data', proto_file_name)
     return read_file(fp)
 
 
@@ -110,7 +110,7 @@ def make_test_data():
                 align_by_equal_sign=config['align_by_equal_sign'],
                 flatten=config['flatten'],
                 comment_max_length=config['comment_max_length'],
-                new_fp=formatted_file_name
+                new_fp=os.path.join("test_data", formatted_file_name)
             )
 
             c = deepcopy(config)

@@ -128,7 +128,7 @@ def main():
         "--folder",
         type=str,
         default=os.getcwd(),
-        help="target folder or path, default is current folder, all protubuf files under it and its' subdirectories will be formatted."
+        help="target directory, default is current directory, all protobuf files under it and its' subdirectories will be formatted."
     )
     format_parser.add_argument(
         "--indents",
@@ -146,7 +146,7 @@ def main():
         "--align-by-equal-sign",
         type=bool,
         default=False,
-        help="align the code by equal sign"
+        help="align the code by equal sign: 'True' or 'False'"
     )
     format_parser.add_argument(
         "--flatten",
@@ -158,7 +158,7 @@ def main():
         "--comment-max-length",
         type=int,
         default=999999,
-        help="the max length of comment line, defalut is 999999."
+        help="the max length of comment line, default is 999999."
     )
     usage = make_usage(parser)
     parser.usage = usage
