@@ -4,7 +4,7 @@ from .helper import test_path, read_lines
 
 
 def test_parse_object_nested():
-    original_file_path = os.path.join(test_path, 'test_data_3.proto')
+    original_file_path = os.path.join(test_path, 'test_data/unformatted/test_data_3.proto')
     lines = read_lines(original_file_path)
     op = ObjectParser()
     op.parse(lines)

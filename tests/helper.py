@@ -13,8 +13,8 @@ def read_lines(file_path):
         return lines
 
 
-def read_proto(proto_file_name):
-    fp = os.path.join(test_path, 'test_data', proto_file_name)
+def read_formatted_proto(proto_file_name):
+    fp = os.path.join(test_path, 'test_data', 'formatted', proto_file_name)
     return read_file(fp)
 
 
@@ -104,13 +104,13 @@ def make_test_data():
         for config in configs:
             formatted_file_name = create_formatted_file_name(test_file, config)
             format_file(
-                fp=test_file,
+                fp=os.path.join("test_data", "unformatted", test_file),
                 indents=config['indents'],
                 top_comment=config['top_comment'],
                 align_by_equal_sign=config['align_by_equal_sign'],
                 flatten=config['flatten'],
                 comment_max_length=config['comment_max_length'],
-                new_fp=os.path.join("test_data", formatted_file_name)
+                new_fp=os.path.join("test_data", "formatted", formatted_file_name)
             )
 
             c = deepcopy(config)
@@ -127,7 +127,7 @@ def make_test_data():
 def create_test_cases(test_cases):
     content = """import os
 from src.proto_formatter import format_str
-from .helper import read_proto, read_file, test_path
+from .helper import read_formatted_proto, read_file, test_path
 
 
 """
@@ -135,9 +135,9 @@ from .helper import read_proto, read_file, test_path
     cases = []
 
     case_template = """def test_format_str_{}():
-    expected_text = read_proto('{}')
+    expected_text = read_formatted_proto('{}')
 
-    original_file_path = os.path.join(test_path, '{}')
+    original_file_path = os.path.join(test_path, 'test_data', 'unformatted', '{}')
     proto_str = read_file(original_file_path)
     actual_text = format_str(proto_str, indents={}, top_comment={}, align_by_equal_sign={}, flatten={}, comment_max_length={})
 
