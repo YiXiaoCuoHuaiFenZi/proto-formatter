@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.1.15] - 2021-12-30
+### Changed
+- option default values.
+- usage output.
+
+## [0.1.15] - 2021-12-30
 ### Add
 - support extend type.
 - refactor.
