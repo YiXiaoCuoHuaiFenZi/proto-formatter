@@ -1,10 +1,10 @@
 import os
 import sys
 import types
+import util
 from argparse import ArgumentParser
 
 from . import format_file
-from .util import read_file, proto_print, print_info
 
 
 def _get_proto_files(root_path):
@@ -47,43 +47,52 @@ def format_actions(max_length_of_options, actions):
     return lines
 
 
-def make_usage(parser: ArgumentParser):
-    max_length_of_names = get_option_max_length(parser)
+def format_usage_line(name, description, max_length_of_option_names):
     one_space = ' '
     indents = 2
-    saboah = 4  # space amount between option and help
-    option_lines = ["", "general options:"]
-    actions = parser._actions
+    space_between_name_description = 8
+    help_start_index = max_length_of_option_names + space_between_name_description
+    help_text_max_length = 80
+
+    name = f"{one_space * indents}{name}"
+
+    option_lines = util.to_lines(description, help_text_max_length)
+    option_lines = util.add_prefix(option_lines, one_space * help_start_index)
+    option_lines[0] = util.replace_at_start(option_lines[0], name)
+    return option_lines
+
+
+def make_usage(parser: ArgumentParser):
     commands_lines = []
+    option_lines = ["", "general options:"]
+
+    max_length_of_option_names = get_option_max_length(parser)
+    actions = parser._actions
+
     for action in actions:
         for option_string in action.option_strings:
-            fill_spaces_amount = max_length_of_names - len(option_string) + saboah
-            line = f"{one_space * indents}{option_string}{one_space * fill_spaces_amount}{action.help}"
-            option_lines.append(line)
+            option_lines.extend(format_usage_line(option_string, action.help, max_length_of_option_names))
 
         if action.choices:
             for command, sub_parser in action.choices.items():
-                fill_spaces_amount = max_length_of_names - len(command) + saboah
-                line = f"{one_space * indents}{command}{one_space * fill_spaces_amount}{sub_parser.description}"
-                commands_lines.append(line)
+                commands_lines.extend(format_usage_line(command, sub_parser.description, max_length_of_option_names))
                 for action_name, action_value in sub_parser._option_string_actions.items():
                     for option_string in action_value.option_strings:
-                        fill_spaces_amount = max_length_of_names - len(option_string) + saboah
-                        line = f"{one_space * indents}{option_string}{one_space * fill_spaces_amount}{action_value.help}"
-                        option_lines.append(line)
+                        option_lines.extend(
+                            format_usage_line(option_string, action_value.help, max_length_of_option_names))
     content = """
-{before_stars}
+{prefix_stars}
 *  {description}  *
-{end_stars}
+{suffix_stars}
 
 usage:
   proto_formatter <command> [options]
 
 commands:
 """
-    before_stars = "*" * (len(parser.description) + 6)
-    end_stars = before_stars
-    content = content.format(description=parser.description, before_stars=before_stars, end_stars=end_stars)
+    prefix_stars = "*" * (len(parser.description) + 6)
+    suffix_stars = prefix_stars
+    content = content.format(description=parser.description, prefix_stars=prefix_stars, suffix_stars=suffix_stars)
     content = content + '\n'.join(commands_lines + option_lines)
     return content
 
@@ -133,26 +142,26 @@ def main():
     format_parser.add_argument(
         "--indents",
         type=int,
-        help="the number of indented spaces",
+        help="the number of indented spaces, default is 4",
         default=4
     )
     format_parser.add_argument(
         "--top-comment",
         type=bool,
         default=False,
-        help="format all comments as top comments(above the target line)"
+        help="format all comments as top comments(above the target line), default is False"
     )
     format_parser.add_argument(
         "--align-by-equal-sign",
         type=bool,
-        default=False,
-        help="align the code by equal sign: 'True' or 'False'"
+        default=True,
+        help="align the code by equal sign: True or False, default is True"
     )
     format_parser.add_argument(
         "--flatten",
         type=bool,
         default=False,
-        help="flatten nested objects"
+        help="flatten nested objects, default is False"
     )
     format_parser.add_argument(
         "--comment-max-length",
@@ -185,7 +194,7 @@ def main():
 
         proto_files = list(set(proto_files))  # remove duplicates
         for fp in proto_files:
-            print_info(f"formatting {fp.replace(root_path, '')}")
+            util.print_info(f"formatting {fp.replace(root_path, '')}")
             format_file(
                 fp,
                 indents=args.indents,
@@ -195,9 +204,9 @@ def main():
                 comment_max_length=args.comment_max_length,
                 new_fp=None
             )
-        print_info("Done!")
+        util.print_info("Done!")
 
     if args.command == 'view':
         args = parser.parse_args()
         fp = os.path.join(os.getcwd(), args.file)
-        proto_print(read_file(fp))
+        util.proto_print(util.read_file(fp))

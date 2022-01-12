@@ -115,3 +115,30 @@ def show_colors():
             code = str(i * 16 + j)
             sys.stdout.write(u"\u001b[38;5;" + code + "m " + code.ljust(4))
     print(u"\u001b[0m")  # clear
+
+
+def split(line: str, x: int):
+    """
+    split a line every x characters
+    :param line: original line need to be split.
+    :param x: max length of split lines
+    :return: a string list that all elements are not more than x characters.
+    """
+    return [line[i: i + x] for i in range(0, len(line), x)]
+
+
+def add_prefix(lines: [str], prefix: str):
+    return [prefix + line for line in lines]
+
+
+def replace_at_start(line: str, new: str):
+    """
+    replace the start substring with same length of new string from the start of the line with the new string.
+    :param line: lien to be processed.
+    :param new: new string.
+    :return: replaced line.
+    """
+    if len(line) <= len(new):
+        return new[:len(line)]
+    else:
+        return f"{new}{line[len(new):]}"
