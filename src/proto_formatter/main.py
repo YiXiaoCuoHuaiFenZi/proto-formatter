@@ -1,10 +1,11 @@
 import os
 import sys
 import types
-import util
+
 from argparse import ArgumentParser
 
 from . import format_file
+from .util import to_lines, add_prefix, replace_at_start, print_info, proto_print, read_file
 
 
 def _get_proto_files(root_path):
@@ -56,9 +57,9 @@ def format_usage_line(name, description, max_length_of_option_names):
 
     name = f"{one_space * indents}{name}"
 
-    option_lines = util.to_lines(description, help_text_max_length)
-    option_lines = util.add_prefix(option_lines, one_space * help_start_index)
-    option_lines[0] = util.replace_at_start(option_lines[0], name)
+    option_lines = to_lines(description, help_text_max_length)
+    option_lines = add_prefix(option_lines, one_space * help_start_index)
+    option_lines[0] = replace_at_start(option_lines[0], name)
     return option_lines
 
 
@@ -194,7 +195,7 @@ def main():
 
         proto_files = list(set(proto_files))  # remove duplicates
         for fp in proto_files:
-            util.print_info(f"formatting {fp.replace(root_path, '')}")
+            print_info(f"formatting {fp.replace(root_path, '')}")
             format_file(
                 fp,
                 indents=args.indents,
@@ -204,9 +205,9 @@ def main():
                 comment_max_length=args.comment_max_length,
                 new_fp=None
             )
-        util.print_info("Done!")
+        print_info("Done!")
 
     if args.command == 'view':
         args = parser.parse_args()
         fp = os.path.join(os.getcwd(), args.file)
-        util.proto_print(util.read_file(fp))
+        proto_print(read_file(fp))
