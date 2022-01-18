@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.15] - 2021-12-30
+## [0.1.16] - 2021-12-30
 ### Changed
 - option default values.
 - usage output.

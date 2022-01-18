@@ -5,7 +5,8 @@ import types
 from argparse import ArgumentParser
 
 from . import format_file
-from .util import to_lines, add_prefix, replace_at_start, print_info, proto_print, read_file
+from .util import (to_lines, add_prefix, add_suffix, replace_at_start, print_info, proto_print, read_file,
+                   align_lines_with_filler)
 
 
 def _get_proto_files(root_path):
@@ -48,54 +49,64 @@ def format_actions(max_length_of_options, actions):
     return lines
 
 
-def format_usage_line(name, description, max_length_of_option_names):
-    one_space = ' '
+def format_usage_line(name, description, max_length_of_names, length):
+    space = ' '
     indents = 2
     space_between_name_description = 8
-    help_start_index = max_length_of_option_names + space_between_name_description
-    help_text_max_length = 80
+    space_before_description = indents + max_length_of_names + space_between_name_description
+    description_length = length - space_before_description
 
-    name = f"{one_space * indents}{name}"
-
-    option_lines = to_lines(description, help_text_max_length)
-    option_lines = add_prefix(option_lines, one_space * help_start_index)
+    name = f"{space * indents}{name}"
+    option_lines = to_lines(description, description_length)
+    option_lines = add_prefix(option_lines, space * space_before_description)
     option_lines[0] = replace_at_start(option_lines[0], name)
     return option_lines
 
 
-def make_usage(parser: ArgumentParser):
+def create_introduction(description, length):
+    line_length = length - 6  # prefix len of "*  " and suffix len of "  *"
+    lines = align_lines_with_filler(description, line_length, align="center")
+
+    lines = add_prefix(lines, "*  ")
+    lines = add_suffix(lines, "  *")
+
+    stars = "*" * length
+    lines.insert(0, stars)
+    lines.append(stars)
+
+    return "\n".join(lines)
+
+
+def create_usage(parser: ArgumentParser):
+    usage_line_length = 100
     commands_lines = []
     option_lines = ["", "general options:"]
 
-    max_length_of_option_names = get_option_max_length(parser)
+    max_length_of_names = get_option_max_length(parser)
     actions = parser._actions
 
     for action in actions:
         for option_string in action.option_strings:
-            option_lines.extend(format_usage_line(option_string, action.help, max_length_of_option_names))
+            option_lines.extend(format_usage_line(option_string, action.help, max_length_of_names, usage_line_length))
 
         if action.choices:
             for command, sub_parser in action.choices.items():
-                commands_lines.extend(format_usage_line(command, sub_parser.description, max_length_of_option_names))
+                commands_lines.extend(
+                    format_usage_line(command, sub_parser.description, max_length_of_names, usage_line_length))
                 for action_name, action_value in sub_parser._option_string_actions.items():
                     for option_string in action_value.option_strings:
                         option_lines.extend(
-                            format_usage_line(option_string, action_value.help, max_length_of_option_names))
-    content = """
-{prefix_stars}
-*  {description}  *
-{suffix_stars}
-
+                            format_usage_line(option_string, action_value.help, max_length_of_names, usage_line_length))
+    usage = """
 usage:
   proto_formatter <command> [options]
 
 commands:
 """
-    prefix_stars = "*" * (len(parser.description) + 6)
-    suffix_stars = prefix_stars
-    content = content.format(description=parser.description, prefix_stars=prefix_stars, suffix_stars=suffix_stars)
-    content = content + '\n'.join(commands_lines + option_lines)
-    return content
+    introduction = create_introduction(parser.description, usage_line_length)
+
+    usage = introduction + usage + '\n'.join(commands_lines + option_lines)
+    return usage
 
 
 def new_format_usage(self):
@@ -104,7 +115,7 @@ def new_format_usage(self):
     formatter.add_usage(self.usage, self._actions, self._mutually_exclusive_groups)
 
     lines = formatter.format_help().split('\n')
-    lines[0] = ''  # replace the prefix "usage:"
+    lines[0] = lines[0].replace('usage: ', '')  # replace the prefix "usage: "
     return '\n'.join(lines)
 
 
@@ -114,12 +125,13 @@ def new_format_help(self):
     formatter.add_usage(self.usage, self._actions, self._mutually_exclusive_groups)
 
     lines = formatter.format_help().split('\n')
-    lines[0] = ''  # replace the prefix "usage:"
+    lines[0] = lines[0].replace('usage:', '')  # replace the prefix "usage:"
     return '\n'.join(lines)
 
 
 def main():
-    parser = ArgumentParser(description="Format protobuf file(s) from a specific target.")  # add_help=False,
+    parser = ArgumentParser(
+        description="Format protobuf file(s) from a specific target.\nMIT License")  # add_help=False,
     sub_parser = parser.add_subparsers(dest='command')
     format_parser = sub_parser.add_parser('format', description='format protobuf files', add_help=False)
     view_parser = sub_parser.add_parser('view', description="view file", add_help=False)
@@ -170,7 +182,7 @@ def main():
         default=999999,
         help="the max length of comment line, default is 999999."
     )
-    usage = make_usage(parser)
+    usage = create_usage(parser)
     parser.usage = usage
     # patch format_help method to use custom usage message
     parser.format_help = types.MethodType(new_format_help, parser)

@@ -1,6 +1,8 @@
 import curses
 import sys
 
+from docutils.parsers.rst.directives.tables import align
+
 
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
@@ -129,6 +131,46 @@ def split(line: str, x: int):
 
 def add_prefix(lines: [str], prefix: str):
     return [prefix + line for line in lines]
+
+
+def add_suffix(lines: [str], suffix: str):
+    return [line + suffix for line in lines]
+
+
+def align_lines_with_filler(text: str, length: int, filler: str = " ", align='left'):
+    """
+    align text
+    :param text: text to be formatted.
+    :param length: max length limitation for each line.
+    :param filler: the character used to added to the line to make sure the length is the same for lines.
+    :param align: the way of alignment, left, right or center
+    :return: formatted string lines
+    """
+    lines = text.split("\n")
+
+    formatted_lines = []
+    for line in lines:
+        formatted_lines.extend(to_lines(line, length))
+
+    lines = formatted_lines
+    if align == 'left':
+        return [f"{line.strip()}{filler * (length - len(line.strip()))}" for line in lines]
+
+    if align == 'right':
+        return [f"{filler * (length - len(line.strip()))}{line.strip()}" for line in lines]
+
+    if align == 'center':
+        processed_lines = []
+        for line in lines:
+            filler_amount = int((length - len(line.strip())) / 2)
+            if (length - len(line.strip())) % 2 == 1:
+                line = f"{filler * filler_amount}{line.strip() + ' '}{filler * filler_amount}"
+            else:
+                line = f"{filler * filler_amount}{line.strip()}{filler * filler_amount}"
+            processed_lines.append(line)
+        return processed_lines
+
+    return lines
 
 
 def replace_at_start(line: str, new: str):

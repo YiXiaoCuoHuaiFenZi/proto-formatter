@@ -12,28 +12,30 @@ proto_formatter format
 ```
 Help message
 ```shell
-*****************************************************
-*  Format protobuf file(s) from a specific target.  *
-*****************************************************
-
+****************************************************************************************************
+*                         Format protobuf file(s) from a specific target.                          *
+*                                           MIT License                                            *
+****************************************************************************************************
 usage:
   proto_formatter <command> [options]
 
 commands:
-  format                   format protobuf files
-  view                     view file
+  format                       format protobuf files
+  view                         view file
 
 general options:
-  -h                       show this help message and exit
-  --help                   show this help message and exit
-  --files                  target protobuf files need to be formatted.
-  --folder                 target directory, default is current directory, all protobuf files under it including all subdirectories will be formatted.
-  --indents                the number of indented spaces
-  --top-comment            format all comments as top comments(above the target line)
-  --align-by-equal-sign    align the code by equal sign: 'True' or 'False'
-  --flatten                flatten nested objects
-  --comment-max-length     the max length of comment line, default is 999999.
-  --file                   target protobuf file, only used for command 'view'
+  -h                           show this help message and exit
+  --help                       show this help message and exit
+  --files                      target protobuf files need to be formatted.
+  --folder                     target directory, default is current directory, all protobuf files
+                               under it including all subdirectories will be formatted.
+  --indents                    the number of indented spaces, default is 4
+  --top-comment                format all comments as top comments(above the target line), default
+                               is False
+  --align-by-equal-sign        align the code by equal sign: True or False, default is True
+  --flatten                    flatten nested objects, default is False
+  --comment-max-length         the max length of comment line, default is 999999.
+  --file                       target protobuf file, only used for command 'view'
 ```
 It also provides a method ``format_str`` to format a protobuf string.
 ```python
@@ -54,7 +56,7 @@ comment of id a
        optional string email = 3;// comment of email
 }
 """
-formatted_proto_str = format_str(proto_str, align_by_equal_sign=True)
+formatted_proto_str = format_str(proto_str)
 print(formatted_proto_str)
 ```
 The formatted_proto_str is:
@@ -66,12 +68,12 @@ message Person {
   /*
   **    comment of name a
   */
-  required string name  = 1;  // comment of name b
+  required string name = 1;   // comment of name b
   /*
   **    comment of id a
   **    comment of id b
   */
-  required int32 id     = 2;  // comment of id c
+  required int32 id = 2;      // comment of id c
   optional string email = 3;  // comment of email
 }
 ```
